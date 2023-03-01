@@ -1,0 +1,7 @@
+re
+
+mne 
+mne-hfo
+mne_connectivity
+numpy
+matplotlib
