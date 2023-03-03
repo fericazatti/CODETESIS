@@ -17,6 +17,8 @@ from mne_hfo.sklearn import make_Xy_sklearn, DisabledCV
 from util.general_utils import convert_to_bipolar
 from util.hfo import plot_events_hfo
 
+import pandas as pd
+
 #set
 # matplotlib.use('pdf')
 
@@ -28,8 +30,20 @@ from util.hfo import plot_events_hfo
 
 raw = mne.io.read_raw_edf('/home/proyectoepilepsia/Documents/Pruebas/CodeTesis/subjects/sub-HUP060/sub-HUP060_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf',
                            preload=True)
+ch_info = pd.read_csv('subjects/sub-HUP060/sub-HUP060_ses-presurgery_ieeg_sub-HUP060_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv', sep = '\t')
+ch_localization = pd.read_csv('subjects/sub-HUP060/sub-HUP060_ses-presurgery_ieeg_sub-HUP060_ses-presurgery_acq-seeg_space-fsaverage_electrodes.tsv', sep = '\t')
+
+ch_bads = ch_info.loc[ch_info['status'] == 'bad']['name']
+raw.drop_channels(ch_bads)
 
 raw = convert_to_bipolar(raw)
+
+ch_info = pd.read_csv('subjects/sub-HUP060/sub-HUP060_ses-presurgery_ieeg_sub-HUP060_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv', sep = '\t')
+ch_localization = pd.read_csv('subjects/sub-HUP060/sub-HUP060_ses-presurgery_ieeg_sub-HUP060_ses-presurgery_acq-seeg_space-fsaverage_electrodes.tsv', sep = '\t')
+
+ch_bads = ch_info.loc[ch_info['status'] == 'bad']['name']
+
+
 
 #read annotations from file
 ann = raw.annotations

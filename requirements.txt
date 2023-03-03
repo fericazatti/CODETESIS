@@ -5,3 +5,4 @@ mne-hfo
 mne_connectivity
 numpy
 matplotlib
+
