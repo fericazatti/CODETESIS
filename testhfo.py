@@ -19,29 +19,30 @@ from util.hfo import plot_events_hfo
 
 import pandas as pd
 
-#set
 # matplotlib.use('pdf')
 
 #import data
-# raw = mne.io.read_raw_edf('D:\Fernando_Icazatti\Trabajofinal\BBDD\Anexos_Pruebas\sub-HUP60\Reduced_sub-HUP060_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf') 
+raw = mne.io.read_raw_edf('subjects/sub-HUP139/sub-HUP139_ses-presurgery_ieeg_sub-HUP139_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf', preload = True) 
 
-# raw = mne.io.read_raw_edf('/home/proyectoepilepsia/Documents/Pruebas/CodeTesis/subjects/sub-HUP060/Reduced_sub-HUP060_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf',
+# raw = mne.io.read_raw_edf('/home/proyectoepilepsia/Documents/Pruebas/CodeTesis/subjects/sub-HUP139/Reduced_sub-HUP139_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf',
 #                            preload=True)
 
-raw = mne.io.read_raw_edf('/home/proyectoepilepsia/Documents/Pruebas/CodeTesis/subjects/sub-HUP060/sub-HUP060_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf',
-                           preload=True)
-ch_info = pd.read_csv('subjects/sub-HUP060/sub-HUP060_ses-presurgery_ieeg_sub-HUP060_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv', sep = '\t')
-ch_localization = pd.read_csv('subjects/sub-HUP060/sub-HUP060_ses-presurgery_ieeg_sub-HUP060_ses-presurgery_acq-seeg_space-fsaverage_electrodes.tsv', sep = '\t')
+# raw = mne.io.read_raw_edf('/home/proyectoepilepsia/Documents/Pruebas/CodeTesis/subjects/sub-HUP139/sub-HUP139_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf',
+#                            preload=True)
+ch_info = pd.read_csv('subjects/sub-HUP139/sub-HUP139_ses-presurgery_ieeg_sub-HUP139_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv', sep = '\t')
+ch_localization = pd.read_csv('subjects/sub-HUP139/sub-HUP139_ses-presurgery_ieeg_sub-HUP139_ses-presurgery_acq-seeg_space-fsaverage_electrodes.tsv', sep = '\t')
 
 ch_bads = ch_info.loc[ch_info['status'] == 'bad']['name']
+ch_surgical = ch_info.loc[ch_info['status_description'] == 'soz']['name']
+
 raw.drop_channels(ch_bads)
 
 raw = convert_to_bipolar(raw)
 
-ch_info = pd.read_csv('subjects/sub-HUP060/sub-HUP060_ses-presurgery_ieeg_sub-HUP060_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv', sep = '\t')
-ch_localization = pd.read_csv('subjects/sub-HUP060/sub-HUP060_ses-presurgery_ieeg_sub-HUP060_ses-presurgery_acq-seeg_space-fsaverage_electrodes.tsv', sep = '\t')
+# ch_info = pd.read_csv('subjects/sub-HUP139/sub-HUP139_ses-presurgery_ieeg_sub-HUP139_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv', sep = '\t')
+# ch_localization = pd.read_csv('subjects/sub-HUP139/sub-HUP139_ses-presurgery_ieeg_sub-HUP139_ses-presurgery_acq-seeg_space-fsaverage_electrodes.tsv', sep = '\t')
 
-ch_bads = ch_info.loc[ch_info['status'] == 'bad']['name']
+# ch_bads = ch_info.loc[ch_info['status'] == 'bad']['name']
 
 
 
@@ -59,7 +60,7 @@ kwargs = {
 
 # Set Key Word Arguments for the RMS Detector and generate the class object
 kwargs = {
-    'filter_band': (80, 249),
+    'filter_band': (80, 500),
     'threshold': 3,
     'win_size': 100,
     'overlap': 0.25,

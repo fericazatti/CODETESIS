@@ -21,8 +21,7 @@ def plot_events_hfo(data):
     plt.ylabel('Counts')
     plt.xticks(rotation = 90, fontsize = 10)
 
-    # plt.savefig('prueba_chart.png', dpi=300, bbox_inches='tight')
-
+    # plt.savefig('prueba_chart.png', dpi=300, bbox_inches='tight')    
     plt.show()
 
 
