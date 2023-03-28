@@ -14,23 +14,26 @@ from mne_hfo import LineLengthDetector, RMSDetector
 from mne_hfo.score import _compute_score_data, accuracy
 from mne_hfo.sklearn import make_Xy_sklearn, DisabledCV
 
+from epycom.event_detection import HilbertDetector
+
 from util.general_utils import convert_to_bipolar
 from util.hfo import plot_events_hfo
+from util.hfo_2 import plot_events_hfo_2
+from util.plots.bar_chart import bar_chart
 
+from skimage.filters import threshold_otsu
 import pandas as pd
 
-# matplotlib.use('pdf')
+#########import data
 
-#import data
-raw = mne.io.read_raw_edf('subjects/sub-HUP139/sub-HUP139_ses-presurgery_ieeg_sub-HUP139_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf', preload = True) 
-
-# raw = mne.io.read_raw_edf('/home/proyectoepilepsia/Documents/Pruebas/CodeTesis/subjects/sub-HUP139/Reduced_sub-HUP139_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf',
+# raw = mne.io.read_raw_edf('subjects/alemanno/ALEMANO_34_FEDERICO.edf',preload = True)
+raw = mne.io.read_raw_edf('subjects/sub-HUP160/sub-HUP160_ses-presurgery_ieeg_sub-HUP160_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf', preload = True) 
+# raw = mne.io.read_raw_edf('/home/proyectoepilepsia/Documents/Pruebas/CodeTesis/subjects/sub-HUP160/Reduced_sub-HUP160_ses-presurgery_task-interictal_acq-ecog_run-02_ieeg.edf',
 #                            preload=True)
-
-# raw = mne.io.read_raw_edf('/home/proyectoepilepsia/Documents/Pruebas/CodeTesis/subjects/sub-HUP139/sub-HUP139_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf',
+# raw = mne.io.read_raw_edf('/home/proyectoepilepsia/Documents/Pruebas/CodeTesis/subjects/sub-HUP160/sub-HUP160_ses-presurgery_task-interictal_acq-ecog_run-01_ieeg.edf',
 #                            preload=True)
-ch_info = pd.read_csv('subjects/sub-HUP139/sub-HUP139_ses-presurgery_ieeg_sub-HUP139_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv', sep = '\t')
-ch_localization = pd.read_csv('subjects/sub-HUP139/sub-HUP139_ses-presurgery_ieeg_sub-HUP139_ses-presurgery_acq-seeg_space-fsaverage_electrodes.tsv', sep = '\t')
+ch_info = pd.read_csv('subjects/sub-HUP160/sub-HUP160_ses-presurgery_ieeg_sub-HUP160_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv', sep = '\t')
+# ch_localization = pd.read_csv('subjects/sub-HUP160/sub-HUP160_ses-presurgery_ieeg_sub-HUP160_ses-presurgery_acq-ecog_space-fsaverage_electrodes.tsv', sep = '\t')
 
 ch_bads = ch_info.loc[ch_info['status'] == 'bad']['name']
 ch_surgical = ch_info.loc[ch_info['status_description'] == 'soz']['name']
@@ -39,8 +42,8 @@ raw.drop_channels(ch_bads)
 
 raw = convert_to_bipolar(raw)
 
-# ch_info = pd.read_csv('subjects/sub-HUP139/sub-HUP139_ses-presurgery_ieeg_sub-HUP139_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv', sep = '\t')
-# ch_localization = pd.read_csv('subjects/sub-HUP139/sub-HUP139_ses-presurgery_ieeg_sub-HUP139_ses-presurgery_acq-seeg_space-fsaverage_electrodes.tsv', sep = '\t')
+# ch_info = pd.read_csv('subjects/sub-HUP160/sub-HUP160_ses-presurgery_ieeg_sub-HUP160_ses-presurgery_task-interictal_acq-ecog_run-01_channels.tsv', sep = '\t')
+# ch_localization = pd.read_csv('subjects/sub-HUP160/sub-HUP160_ses-presurgery_ieeg_sub-HUP160_ses-presurgery_acq-ecog_space-fsaverage_electrodes.tsv', sep = '\t')
 
 # ch_bads = ch_info.loc[ch_info['status'] == 'bad']['name']
 
@@ -60,24 +63,33 @@ kwargs = {
 
 # Set Key Word Arguments for the RMS Detector and generate the class object
 kwargs = {
-    'filter_band': (80, 500),
+    'filter_band': (100, 500),
     'threshold': 3,
-    'win_size': 100,
+    'win_size': 10,
     'overlap': 0.25,
     'hfo_name': 'ripple',
 }
+
+# kwargs = {
+#     'fs': 1024.0,
+#     'low_fc': 100,
+#     'high_fc': 500,
+# }
+
 rms_detector = RMSDetector(**kwargs)
 
 ll_detector = LineLengthDetector(**kwargs)
 
-ll_detector = ll_detector.fit(raw)
+# hil_detector = HilbertDetector(**kwargs)
 
-# Dictionary where keys are channel index and values are a list of tuples in the form of (start_samp, end_samp)
-ll_chs_hfo_dict = ll_detector.chs_hfos_
-# nCh x nWin ndarray where each value is the line-length of the data window per channel
-ll_hfo_event_array = ll_detector.hfo_event_arr_
-# Pandas dataframe containing onset, duration, sample trial, and trial type per HFO
-ll_hfo_df = ll_detector.df_
+# ll_detector = ll_detector.fit(raw)
+
+# # Dictionary where keys are channel index and values are a list of tuples in the form of (start_samp, end_samp)
+# ll_chs_hfo_dict = ll_detector.chs_hfos_
+# # nCh x nWin ndarray where each value is the line-length of the data window per channel
+# ll_hfo_event_array = ll_detector.hfo_event_arr_
+# # Pandas dataframe containing onset, duration, sample trial, and trial type per HFO
+# ll_hfo_df = ll_detector.df_
 
 # Detect HFOs in the raw data using the RMSDetector method.
 rms_detector = rms_detector.fit(raw)
@@ -86,10 +98,37 @@ rms_chs_hfo_dict = rms_detector.chs_hfos_
 rms_hfo_event_array = rms_detector.hfo_event_arr_
 rms_hfo_df = rms_detector.df_
 
-plot_events_hfo(ll_hfo_df['channels']) #la funcion recibe la serie de canales en los eventos encontrados
-plot_events_hfo(rms_hfo_df['channels'])
 
+# out = hil_detector.compute(raw.get_data()[1])
+
+# plot_events_hfo(ll_hfo_df['channels']) #la funcion recibe la serie de canales en los eventos encontrados
+# plot_events_hfo(rms_hfo_df['channels'])
+
+# plot_events_hfo_2(ll_hfo_df['channels'], ch_info)
+hfo_dist_df = plot_events_hfo_2(rms_hfo_df['channels'], ch_info, raw._last_time)
 # list_hfo = ll_chs_hfo_dict['RAFa1-RAFa2']
+
+
+## Generación del histograma y posterior umbralización
+
+bar_chart(hfo_dist_df)
+
+# hfo_dist_df['hfo_rate'] = round(hfo_dist_df['counts'] / raw._last_time * 60)
+
+hist, bin_edges = np.histogram(hfo_dist_df['hfo_rate'], bins=10)
+bin_edges = bin_edges[0:len(hist)]
+
+plt.hist(hfo_dist_df['hfo_rate'], bins=10, alpha=0.4, color='blue')
+plt.axvline(threshold_otsu(hist = [hist, bin_edges]), color='red')
+plt.show()
+
+# Calcular el percentil 90 de los datos
+percentil_90 = np.percentile(hfo_dist_df['hfo_rate'], 85)
+
+plt.hist(hfo_dist_df['hfo_rate'], bins=10, alpha=0.4, color='blue')
+plt.axvline(percentil_90, color='red')
+plt.show()
+
 
 # sfreq = raw.info['sfreq']
 
@@ -170,4 +209,3 @@ plot_events_hfo(rms_hfo_df['channels'])
 # #     plot_connectivity_circle(x.get_data(output='dense')[:,:,0],
 # #                             node_names = raw.ch_names,
 # #                             title='All-to-All Connectivity ' + x.method[0])           
-
