@@ -28,12 +28,12 @@ import xarray as xr
 from itertools import product
 
 
-def alghoritm_params(lower_freq, upper_freq, band_width, window_min, window_max, window_step):
+def algorithm_params(lower_freq, upper_freq, band_width, window_min, window_max, window_step):
     """
     objective: create array with differents algohortim configuration.
     The objective of the function is to generate an array with different algorithm configurations for the detection of high frequency oscillations (HFOs) in EEG data. The function takes as input several parameters related to the frequency bands and window sizes to be used in the HFO detection algorithm.
     
-    Outpout: 
+    Output: 
     - all_comb: an array containing tuples representing all the different algorithm configurations to be tested in the HFO detection process.
 
     """
@@ -54,8 +54,8 @@ def alghoritm_params(lower_freq, upper_freq, band_width, window_min, window_max,
 # end def
 
 #########import data
-raw = mne.io.read_raw_edf('subjects/sub-HUP160/sub-HUP160_ses-presurgery_ieeg_sub-HUP160_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf', preload = True) 
-ch_info = pd.read_csv('subjects/sub-HUP160/sub-HUP160_ses-presurgery_ieeg_sub-HUP160_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv', sep = '\t')
+raw = mne.io.read_raw_edf('ds004100/sub-HUP060/ses-presurgery/ieeg/sub-HUP060_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf', preload = True) 
+ch_info = pd.read_csv('ds004100/sub-HUP060/ses-presurgery/ieeg/sub-HUP060_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv', sep = '\t')
 
 # %% Query bads and surgical channels
 ch_bads = ch_info.loc[ch_info['status'] == 'bad']['name']
@@ -125,6 +125,7 @@ for raw in raws:
 
     # histogram_hfo(hfo_dist_df)
 
+# %% 
 kwargs = {
     'lower_freq':   40,
     'upper_freq':   249,
@@ -139,19 +140,15 @@ algorithms_config = []
 channels = ['channel1', 'channel2', 'channel3', 'channel4']
 values_coords = ['counts rate', 'status', 'color']
 
-# crear el xarray con las dimensiones y valores
-data_array = xr.DataArray(coords=[algorithms_config, channels, values_coords], dims=['algorithms_config', 'channels', 'values'])
+algorithms_params_names = []
+algorithms_params_array = []
 
-print(data_array)
-for param_combine in alghoritm_params(**kwargs):
-    
-    new_algorithm_config = ['config1']
-    data_array = data_array.reindex(algorithms_config = new_algorithm_config)
-
-    
+# %%
+for param_combine in algorithm_params(**kwargs):
+     
     kwargs = {
         'filter_band': param_combine[0], # (l_freq, h_freq)
-        'threshold': 3, # Number of st. deviations
+        'threshold': 3, # Number of st. deviationsG
         'win_size': param_combine[1], # Sliding window size in samples
         'overlap': 0.25, # Fraction of window overlap [0, 1]
         'hfo_name': "ripple"
@@ -159,3 +156,19 @@ for param_combine in alghoritm_params(**kwargs):
     
     rms_detector = RMSDetector(**kwargs) 
     rms_detector = rms_detector.fit(raw)
+    
+    rms_hfo_df = rms_detector.df_
+    hfo_dist_df = plot_events_hfo_2(rms_hfo_df['channels'], ch_info, raw._last_time)
+    
+    hfo_dist_xarray = (hfo_dist_df.set_index(['channels']).to_xarray()).to_array()
+    hfo_dist_xarray = hfo_dist_xarray.rename({'variable':'values'})
+    
+    algorithms_params_array.append(hfo_dist_xarray)
+    algorithms_params_names.append(f'bw-{param_combine[0]}_ww-{param_combine[1]}')
+    
+
+subject_dataset = xr.Dataset(
+    dict(
+        zip(algorithms_params_names, algorithms_params_array)
+        )
+    )
