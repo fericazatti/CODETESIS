@@ -67,8 +67,8 @@ raw.drop_channels(ch_bads)
 # %% comvert to bipolar reference
 raw = convert_to_bipolar(raw)
 
-for i in range(len(raws)):
-    raws[i] = convert_to_bipolar(raws[i])
+# for i in range(len(raws)):
+#     raws[i] = convert_to_bipolar(raws[i])
 
 # Set Key Word Arguments for the Line Length Detector and generate the class object
 kwargs = {
@@ -172,3 +172,6 @@ subject_dataset = xr.Dataset(
         zip(algorithms_params_names, algorithms_params_array)
         )
     )
+
+attributes = raw.info['subject_info']
+subject_dataset = subject_dataset.assign_attrs(**attributes)
