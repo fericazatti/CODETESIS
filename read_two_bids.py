@@ -10,6 +10,8 @@ from mne.datasets import sample
 from mne_bids import (BIDSPath, read_raw_bids, print_dir_tree, make_report,
                       find_matching_paths, get_entity_vals, inspect_dataset)
 
+import pandas as pd
+
 # %%
 
 dataset = 'ds004100'
@@ -38,13 +40,18 @@ for subject in subjects:
                         acquisition= acquisition) )
 
 
+# %% lectura de los archivos raw e info de los canales (tsv) para cada uno de los registros
 raws = []
+cahnnels_info_paths = []
 extra_params = {'preload' : True}
 for path in bids_path:    
     for value in path.match():
         if value.extension == '.edf':
             raws.append(read_raw_bids(bids_path=value, verbose=False, extra_params = extra_params))
-
+        
+        if value.extension == '.tsv':
+            path_file = f'{dataset}/sub-{value.subject}/ses-{value.session}/{value.datatype}/{value.basename}'
+            cahnnels_info_paths.append(path_file)
 # %% procesar objetos raw
 
         

@@ -25,6 +25,7 @@ from skimage.filters import threshold_otsu
 import pandas as pd
 import xarray as xr
 
+from read_two_bids import raws, cahnnels_info_paths
 from itertools import product
 
 
@@ -136,13 +137,13 @@ kwargs = {
 }
 
 # definir las dimensiones y sus etiquetas
-algorithms_config = []
-channels = ['channel1', 'channel2', 'channel3', 'channel4']
-values_coords = ['counts rate', 'status', 'color']
+# algorithms_config = []
+# channels = ['channel1', 'channel2', 'channel3', 'channel4']
+# values_coords = ['counts rate', 'status', 'color']
 
 algorithms_params_names = []
 algorithms_params_array = []
-
+status = ['bad' if element in raw.info['bads'] else 'good' for element in raw.info['ch_names']] 
 # %%
 for param_combine in algorithm_params(**kwargs):
      
@@ -159,9 +160,10 @@ for param_combine in algorithm_params(**kwargs):
     
     rms_hfo_df = rms_detector.df_
     hfo_dist_df = plot_events_hfo_2(rms_hfo_df['channels'], ch_info, raw._last_time)
+    hfo_dist_df['status_acquis'] = status
     
     hfo_dist_xarray = (hfo_dist_df.set_index(['channels']).to_xarray()).to_array()
-    hfo_dist_xarray = hfo_dist_xarray.rename({'variable':'values'})
+    hfo_dist_xarray = hfo_dist_xarray.rename({'variable':'values'})    
     
     algorithms_params_array.append(hfo_dist_xarray)
     algorithms_params_names.append(f'bw-{param_combine[0]}_ww-{param_combine[1]}')
@@ -175,3 +177,6 @@ subject_dataset = xr.Dataset(
 
 attributes = raw.info['subject_info']
 subject_dataset = subject_dataset.assign_attrs(**attributes)
+
+
+# %%
