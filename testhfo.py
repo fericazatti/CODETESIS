@@ -143,7 +143,6 @@ kwargs = {
 
 algorithms_params_names = []
 algorithms_params_array = []
-status = ['bad' if element in raw.info['bads'] else 'good' for element in raw.info['ch_names']] 
 # %%
 for param_combine in algorithm_params(**kwargs):
      
@@ -160,8 +159,7 @@ for param_combine in algorithm_params(**kwargs):
     
     rms_hfo_df = rms_detector.df_
     hfo_dist_df = plot_events_hfo_2(rms_hfo_df['channels'], ch_info, raw._last_time)
-    hfo_dist_df['status_acquis'] = status
-    
+    status = ['bad' if element in raw.info['bads'] else 'good' for element in hfo_dist_df['channels']]     
     hfo_dist_xarray = (hfo_dist_df.set_index(['channels']).to_xarray()).to_array()
     hfo_dist_xarray = hfo_dist_xarray.rename({'variable':'values'})    
     

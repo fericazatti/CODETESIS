@@ -10,7 +10,12 @@ def bar_chart(df):
     colors = {}
     for state, color in zip(status, df['colors'].unique()):
         colors[state] = color
-    labels = list(colors.keys())        
+    labels = list(colors.keys())  
+    
+    for i in range(len(labels)):
+        if labels[i] != labels[i]:
+            #el valor es Nan
+            labels[i] == '#000000'
    
     #bar_chart
     fig, ax = plt.subplots()
