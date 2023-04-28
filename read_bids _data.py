@@ -26,7 +26,7 @@ from mne_bids import (BIDSPath, read_raw_bids, print_dir_tree, make_report,
 #          it takes to run the example.
 
 dataset = 'ds004100'
-# subject = 'HUP060'
+subject = 'HUP139'
 
 # subjects = ['sub-HUP060', 'sub-HUP064', 'sub-HUP112', 'sub-HUP116']
 
@@ -35,7 +35,7 @@ dataset = 'ds004100'
 # if not op.isdir(bids_root):
 #     os.makedirs(bids_root)
 
-# openneuro.download(dataset=dataset, include=[f'sub-{subject}'])
+openneuro.download(dataset=dataset, include=[f'sub-{subject}'])
 # openneuro.download(dataset=dataset, include= subjects)
 bids_root = f'./{dataset}' 
 

@@ -28,7 +28,7 @@ extensions = ['.edf']
 task = 'interictal'
 acquisition = 'seeg'
 
-subjects = ['HUP060', 'HUP135']
+subjects = ['HUP060', 'HUP139']
 
 bids_path = []
 for subject in subjects:    

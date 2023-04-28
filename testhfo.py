@@ -178,3 +178,12 @@ subject_dataset = subject_dataset.assign_attrs(**attributes)
 
 
 # %%
+
+for element in subject_dataset:
+    print(element)
+    
+    df = subject_dataset[element].to_pandas().T.reset_index()
+    df = df.drop(df[df['colors'].isna()].index)
+    for bad in raw.info['bads']:
+        df = df.drop(df[df['channels'] == bad].index)
+    bar_chart(df)
