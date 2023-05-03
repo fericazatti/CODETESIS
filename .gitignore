@@ -3,3 +3,4 @@ subjects
 ./requirements.txt
 ds004100
 /process
+/__pycache__
