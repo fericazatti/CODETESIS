@@ -38,6 +38,8 @@ def read_four_subjects( subjects,
     """
     Purpose: 
     """
+    bids_root = f'./{dataset}' 
+    session = get_entity_vals(bids_root, 'session')
     bids_path = []
     for subject in subjects:    
         bids_path.append( BIDSPath(subject= subject,
@@ -66,7 +68,6 @@ def read_four_subjects( subjects,
  # end def
 
 # %%
-
 dataset = 'ds004100'
 
 # download(dataset = dataset)
@@ -110,3 +111,36 @@ for path in bids_path.match(): subjects_id.append(path.subject)
 subjects_id = list(set(subjects_id)) #delete repeats values
 subjects_id.sort()
 
+# %% leer los subject y crear la matriz de subjects
+
+kwargs = {
+    'dataset':'ds004100',
+    'datatype':'ieeg',
+    'task':'interictal',
+    'acquisition':'seeg',
+    'run':'01'
+}
+
+subjects_id = detect_subjects(**kwargs)
+
+# Calculamos el número de filas necesarias
+rows = len(subjects_id) // 4 + (1 if len(subjects_id) % 4 != 0 else 0)
+# Creamos la matriz bidimensional con valores None
+subjects_matrix = [[None] * 4 for _ in range(rows)]
+
+# Llenamos la matriz con los elementos del arreglo
+for i, element in enumerate(subjects_id):
+    row = i // 4
+    column = i % 4
+    subjects_matrix[row][column] = element
+
+# %% llamada a la funcion de lectura raws
+
+for subjects in subjects_matrix:
+    subjects = [element for element in subjects if element is not None] # delete None elements for matrix subjects       
+    read_four_subjects(subjects=subjects, **kwargs)
+    
+    
+
+
+# %%
