@@ -16,6 +16,7 @@ import pandas as pd
 
 dataset = 'ds004100'
 bids_root = f'./{dataset}' 
+bids_root = f'{dataset}' #en linux
 
 # %%
 #Acceder a un sujeto/os dentro de la bbdd

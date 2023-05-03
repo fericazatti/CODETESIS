@@ -25,8 +25,11 @@ from skimage.filters import threshold_otsu
 import pandas as pd
 import xarray as xr
 
-from read_two_bids import raws, cahnnels_info_paths
+# from read_two_bids import raws, cahnnels_info_paths
 from itertools import product
+
+from read_data_from_bids import detect_subjects, read_four_subjects
+
 
 
 def algorithm_params(lower_freq, upper_freq, band_width, window_min, window_max, window_step):
@@ -54,10 +57,6 @@ def algorithm_params(lower_freq, upper_freq, band_width, window_min, window_max,
     # end def
 # end def
 
-#########import data
-raw = mne.io.read_raw_edf('ds004100/sub-HUP060/ses-presurgery/ieeg/sub-HUP060_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf', preload = True) 
-ch_info = pd.read_csv('ds004100/sub-HUP060/ses-presurgery/ieeg/sub-HUP060_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv', sep = '\t')
-
 # %% Query bads and surgical channels
 ch_bads = ch_info.loc[ch_info['status'] == 'bad']['name']
 ch_surgical = ch_info.loc[ch_info['status_description'] == 'soz']['name']
@@ -66,6 +65,7 @@ ch_surgical = ch_info.loc[ch_info['status_description'] == 'soz']['name']
 raw.drop_channels(ch_bads)
 
 # %% comvert to bipolar reference
+
 raw = convert_to_bipolar(raw)
 
 # for i in range(len(raws)):
@@ -124,58 +124,113 @@ for raw in raws:
     ###### Generación del histograma y posterior umbralización
     # bar_chart(hfo_dist_df)
 
-    # histogram_hfo(hfo_dist_df)
+        # histogram_hfo(hfo_dist_df)
+# %%
+kwargs = {
+    'dataset':'ds004100',
+    'datatype':'ieeg',
+    'task':'interictal',
+    'acquisition':'seeg',
+    'run':'01'
+}
+subjects_id = detect_subjects(**kwargs)
+
+# Calculamos el número de filas necesarias
+rows = len(subjects_id) // 4 + (1 if len(subjects_id) % 4 != 0 else 0)
+
+# Creamos la matriz bidimensional con valores None
+subjects_matrix = [[None] * 4 for _ in range(rows)]
+
+# Llenamos la matriz con los elementos del arreglo
+for i, element in enumerate(subjects_id):
+    row = i // 4
+    column = i % 4
+    subjects_matrix[row][column] = element
+
+# %% leer los subject y crear la matriz de subjects
+
+kwargs = {
+    'dataset':'data/bids',
+    'datatype':'ieeg',
+    'task':'interictal',
+    'acquisition':'seeg',
+    'run':'01'
+}
+subjects_id = detect_subjects(**kwargs)
+# Calculamos el número de filas necesarias
+rows = len(subjects_id) // 4 + (1 if len(subjects_id) % 4 != 0 else 0)
+# Creamos la matriz bidimensional con valores None
+subjects_matrix = [[None] * 4 for _ in range(rows)]
+
+# Llenamos la matriz con los elementos del arreglo
+for i, element in enumerate(subjects_id):
+    row = i // 4
+    column = i % 4
+    subjects_matrix[row][column] = element
+
+
 
 # %% 
-kwargs = {
-    'lower_freq':   40,
-    'upper_freq':   249,
-    'band_width':   60,
-    'window_min':   50,
-    'window_max':   150,
-    'window_step':  20
-}
-
-# definir las dimensiones y sus etiquetas
-# algorithms_config = []
-# channels = ['channel1', 'channel2', 'channel3', 'channel4']
-# values_coords = ['counts rate', 'status', 'color']
-
-algorithms_params_names = []
-algorithms_params_array = []
-# %%
-for param_combine in algorithm_params(**kwargs):
-     
-    kwargs = {
-        'filter_band': param_combine[0], # (l_freq, h_freq)
-        'threshold': 3, # Number of st. deviationsG
-        'win_size': param_combine[1], # Sliding window size in samples
-        'overlap': 0.25, # Fraction of window overlap [0, 1]
-        'hfo_name': "ripple"
-    }
+for subjects_row in subjects_matrix:
+    raws, channels = read_four_subjects(subjects = subjects_row, **kwargs)
     
-    rms_detector = RMSDetector(**kwargs) 
-    rms_detector = rms_detector.fit(raw)
+    for i in enumerate(raws):
+        raws[i[0]] = convert_to_bipolar(raws[i[0]])
     
-    rms_hfo_df = rms_detector.df_
-    hfo_dist_df = plot_events_hfo_2(rms_hfo_df['channels'], ch_info, raw._last_time)
-    status = ['bad' if element in raw.info['bads'] else 'good' for element in hfo_dist_df['channels']]     
-    hfo_dist_xarray = (hfo_dist_df.set_index(['channels']).to_xarray()).to_array()
-    hfo_dist_xarray = hfo_dist_xarray.rename({'variable':'values'})    
+    for raw, channel_info_path in zip(raws, channels):
+        ch_info = pd.read_csv(channel_info_path, sep='\t')
+        kwargs = {
+            'lower_freq':   40,
+            'upper_freq':   249,
+            'band_width':   60,
+            'window_min':   50,
+            'window_max':   150,
+            'window_step':  20
+        }
+
+        # definir las dimensiones y sus etiquetas
+        # algorithms_config = []
+        # channels = ['channel1', 'channel2', 'channel3', 'channel4']
+        # values_coords = ['counts rate', 'status', 'color']
+
+        algorithms_params_names = []
+        algorithms_params_array = []
+
+        for param_combine in algorithm_params(**kwargs):
+            
+            kwargs = {
+                'filter_band': param_combine[0], # (l_freq, h_freq)
+                'threshold': 3, # Number of st. deviationsG
+                'win_size': param_combine[1], # Sliding window size in samples
+                'overlap': 0.25, # Fraction of window overlap [0, 1]
+                'hfo_name': "ripple"
+            }
+            
+            rms_detector = RMSDetector(**kwargs) 
+            rms_detector = rms_detector.fit(raw)
+            
+            rms_hfo_df = rms_detector.df_
+            hfo_dist_df = plot_events_hfo_2(rms_hfo_df['channels'], ch_info, raw._last_time)
+            status = ['bad' if element in raw.info['bads'] else 'good' for element in hfo_dist_df['channels']]     
+            hfo_dist_xarray = (hfo_dist_df.set_index(['channels']).to_xarray()).to_array()
+            hfo_dist_xarray = hfo_dist_xarray.rename({'variable':'values'})    
+            
+            algorithms_params_array.append(hfo_dist_xarray)
+            algorithms_params_names.append(f'bw-{param_combine[0]}_ww-{param_combine[1]}')
+            
+
+        subject_dataset = xr.Dataset(
+            dict(
+                zip(algorithms_params_names, algorithms_params_array)
+                )
+            )
+
+        attributes = raw.info['subject_info']
+        subject_dataset = subject_dataset.assign_attrs(**attributes)
+
+        subject_datasets.append(subject_dataset)
     
-    algorithms_params_array.append(hfo_dist_xarray)
-    algorithms_params_names.append(f'bw-{param_combine[0]}_ww-{param_combine[1]}')
-    
-
-subject_dataset = xr.Dataset(
-    dict(
-        zip(algorithms_params_names, algorithms_params_array)
-        )
-    )
-
-attributes = raw.info['subject_info']
-subject_dataset = subject_dataset.assign_attrs(**attributes)
-
+    del raws
 
 # %%
 
