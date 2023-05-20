@@ -1,7 +1,3 @@
-util/__pycache__
-subjects
+*.pyc
 ./requirements.txt
-ds004100
-/process
-/__pycache__
 data/

@@ -41,7 +41,30 @@ def plot_events_hfo_2(data, ch_info, last_time):
         
     return df        
     
+def algorithm_params(lower_freq, upper_freq, band_width, window_min, window_max, window_step):
+    """
+    objective: create array with differents algohortim configuration.
+    The objective of the function is to generate an array with different algorithm configurations for the detection of high frequency oscillations (HFOs) in EEG data. The function takes as input several parameters related to the frequency bands and window sizes to be used in the HFO detection algorithm.
+    
+    Output: 
+    - all_comb: an array containing tuples representing all the different algorithm configurations to be tested in the HFO detection process.
 
+    """
+    band_width_2 = upper_freq - lower_freq
+    filter_bands = []
+    filter_bands.append((lower_freq, upper_freq))
+
+    for i in range(round(band_width_2 / (band_width / 2)) - 1):
+        if lower_freq + 30 * i + band_width == upper_freq + 1:
+            band_width = band_width - 1
+        filter_bands.append(tuple([lower_freq + 30 * i, lower_freq + 30 * i + band_width]))   
+
+    all_combinations = product(filter_bands, range(window_min, window_max + 1, window_step))
+
+    return all_combinations
+        
+    # end def
+# end def
 
     
 
