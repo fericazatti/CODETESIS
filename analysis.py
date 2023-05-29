@@ -123,5 +123,3 @@ for subject_dataset in datasets:
 
 
     ds[subject_dataset.attrs['his_id']] = xr.DataArray(hrr_list, dims=('algorithm_params', 'statisicians'))
-
-# %%
