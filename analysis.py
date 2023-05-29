@@ -3,6 +3,7 @@
 import pickle
 import os
 import xarray as xr
+import numpy as np
 
 from src.utils.read_data_from_bids import read_four_subjects
 from src.utils.plots.hfo_plots import *
@@ -81,7 +82,7 @@ data['algorithm_params'] = []
 ds = xr.Dataset(data)
 
 #asignacion de coordenadas
-ds = ds.assign_coords(statisicians = ['hrr'])
+ds = ds.assign_coords(statisicians = ['hrr', 'outcome'])
 
 subject_dataset = datasets[0]
 for element in subject_dataset:
@@ -94,7 +95,9 @@ for subject_dataset in datasets:
     
     subject_id = subject_dataset.attrs['his_id']
     raw, channels = read_four_subjects([subject_id.replace('sub-', '')] ,**kwargs_bids)
+    
     hrr_list = []
+    outcomes = []
 
     for element in subject_dataset:
         
@@ -108,7 +111,7 @@ for subject_dataset in datasets:
         contadores = filtrado['status'].value_counts()
 
         resection_size = contadores.sum()
-        resection_size = 10
+        resection_size = round(resection_size)
         
         hfo_region = df.sort_values('counts', ascending=False).head(resection_size)
         condicion = hfo_region['status'].isin(['resect', 'resect,soz'])
@@ -117,9 +120,27 @@ for subject_dataset in datasets:
 
         hfo_in_resection = contadores.sum()
 
-        hrr = (hfo_in_resection/resection_size).round(3) #hfo resection ratio
+        hrr = round((hfo_in_resection/resection_size),2) + np.random.random() * 0.1 - 0.05#hfo resection ratio
 
-        hrr_list.append([hrr])
+        hrr_list.append(hrr)
+        
+        if subject_dataset.attrs['outcome'] == 'S':
+            outcomes.append(1)
+        else:
+            outcomes.append(0)
+
+    fusion = list(zip(hrr_list, outcomes))
+    fusion_lista = [list(fila) for fila in fusion]
+
+    ds[subject_dataset.attrs['his_id']] = xr.DataArray(fusion_lista, dims=('algorithm_params', 'statisicians'))
+
+# %%
+
+for element in ds.coords["algorithm_params"].values:
+    df = ds.sel(algorithm_params = element).to_pandas().T
+    df_drop = df.drop("algorithm_params")
+    df_drop[['hrr','outcome']].plot.scatter(x='hrr',y='outcome').set_title(element)
 
 
-    ds[subject_dataset.attrs['his_id']] = xr.DataArray(hrr_list, dims=('algorithm_params', 'statisicians'))
+
+# %%
