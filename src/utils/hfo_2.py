@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from itertools import product
 
 def plot_events_hfo_2(data, ch_info, last_time):
     

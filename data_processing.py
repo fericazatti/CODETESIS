@@ -27,8 +27,6 @@ import pandas as pd
 import xarray as xr
 
 # from read_two_bids import raws, cahnnels_info_paths
-from itertools import product
-
 from src.utils.read_data_from_bids import detect_subjects, read_four_subjects
 
 import pickle
@@ -44,7 +42,7 @@ def data_processing(kwargs_bids, kwargs_for_combine):
 
     # Creamos la matriz bidimensional con valores None
     subjects_matrix = [[None] * 4 for _ in range(rows)]
-
+    
     # Llenamos la matriz con los elementos del arreglo
     for i, element in enumerate(subjects_id):
         row = i // 4
@@ -53,7 +51,7 @@ def data_processing(kwargs_bids, kwargs_for_combine):
 
     # %% 
     subject_datasets = []
-
+    print(subjects_matrix)
     for subjects_row in subjects_matrix:
         #read raw data on bids
         raws, channels = read_four_subjects(subjects = subjects_row, **kwargs_bids)
@@ -140,14 +138,3 @@ if __name__ == "__main__":
 
     
     print(f'Hfo distribution analysis for {kwargs_bids["dataset"]} finished')
-
-# %% grafica de todos las distribuciones de hfo encontradas para un subject
-
-# for element in subject_dataset:
-#     print(element)
-    
-#     df = subject_dataset[element].to_pandas().T.reset_index()
-#     df = df.drop(df[df['colors'].isna()].index)
-#     for bad in raw.info['bads']:
-#         df = df.drop(df[df['channels'] == bad].index)
-#     bar_chart(df)

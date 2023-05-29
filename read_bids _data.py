@@ -51,19 +51,21 @@ datatype = 'ieeg'
 extensions = ['.edf']
 task = 'interictal'
 acquisition = 'seeg'
+run = '01'
 
 bids_path = BIDSPath(subject= None,
                      session= session[0],
                      task= task,                      
                      root=bids_root,                     
                      datatype= datatype,
-                     acquisition= acquisition)
+                     acquisition= acquisition, 
+                     run= run)
 
 
 raws = []
 for value in bids_path.match():
     if value.extension == '.edf':
-        raws.append(read_raw_bids(bids_path=value, verbose=False, preload = True))
+        raws.append(read_raw_bids(bids_path=value, verbose=False))
 
 # %% procesar objetos raw
 
