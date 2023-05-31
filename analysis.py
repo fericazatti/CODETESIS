@@ -14,7 +14,7 @@ results_directory = "data/results"
 
 # %% leer datos del procesamiento de un sujeto especifico
 
-subject = "HUP148"
+subject = "HUP117"
 file_path = f'data/processed/sub-{subject}_processed.pickle'
 
 
@@ -44,18 +44,18 @@ kwargs_bids = {
     'run':'01'
     } 
 
-raw, channels = read_four_subjects([subject] ,**kwargs_bids)
+raws, channels = read_four_subjects([subject] ,**kwargs_bids)
 
 for element in subject_dataset:
     print(element)
     
     df = subject_dataset[element].to_pandas().T.reset_index()
     df = df.drop(df[df['colors'].isna()].index)
-    for bad in raw[0].info['bads']:
-        df = df.drop(df[df['ch_split'] == bad].index)
+    for bad in raws[0].info['bads']:
+        df = df.drop(df[df['channels'] == bad].index)
     bar_chart(df)
 
-del raw
+del raws
 
 # %% leer todos los datos procesados obtenidos
 # Obtiene la lista de archivos en el processed_data_directory
@@ -111,7 +111,7 @@ for subject_dataset in datasets:
         contadores = filtrado['status'].value_counts()
 
         resection_size = contadores.sum()
-        resection_size = round(resection_size)
+        resection_size = round(resection_size/2)
         
         hfo_region = df.sort_values('counts', ascending=False).head(resection_size)
         condicion = hfo_region['status'].isin(['resect', 'resect,soz'])
@@ -121,7 +121,7 @@ for subject_dataset in datasets:
         hfo_in_resection = contadores.sum()
 
         hrr = round((hfo_in_resection/resection_size),2) + np.random.random() * 0.1 - 0.05#hfo resection ratio
-
+        # hrr = round((hfo_in_resection/resection_size),2)
         hrr_list.append(hrr)
         
         if subject_dataset.attrs['outcome'] == 'S':
@@ -142,5 +142,70 @@ for element in ds.coords["algorithm_params"].values:
     df_drop[['hrr','outcome']].plot.scatter(x='hrr',y='outcome').set_title(element)
 
 
+
+# %% obtener dataframe con el resultado del proceso
+id = []
+age = []
+sex = []
+hand = []
+outcome = []
+engel = []
+therapy = []
+implant = []
+target = []
+lesion_status = []
+age_onset = [] 
+
+for dataset in datasets:
+    id.append(dataset.attrs['his_id'])
+    age.append(dataset.attrs['age'])
+    sex.append(dataset.attrs['sex'])
+    hand.append(dataset.attrs['hand'])
+    outcome.append(dataset.attrs['outcome'])
+    engel.append(dataset.attrs['engel'])
+    therapy.append(dataset.attrs['therapy'])
+    implant.append(dataset.attrs['implant'])
+    target.append(dataset.attrs['target'])
+    lesion_status.append(dataset.attrs['lesion_status'])
+    age_onset.append(dataset.attrs['age_onset'])
+
+dict(
+    zip(id,
+    zip(age,
+    zip(sex,
+    zip(hand,
+    zip(outcome,
+    zip(engel,
+    zip(therapy,
+    zip(implant,
+    zip(target,
+    zip(lesion_status,
+    age_onset)))))))))))
+dictonary = {
+    nombre_lista: lista for nombre_lista, lista in zip([
+        'id',
+        'age',
+        'sex',
+        'hand',
+        'outcome',
+        'engel',
+        'therapy',
+        'implant',
+        'target',
+        'lesion_status',
+        'age_onset'],
+        [id,
+        age,
+        sex,
+        hand,
+        outcome,
+        engel,
+        therapy,
+        implant,
+        target,
+        lesion_status,
+        age_onset])}
+
+df_process = pd.DataFrame(dictonary)
 
 # %%
