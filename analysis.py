@@ -7,6 +7,8 @@ import numpy as np
 
 from src.utils.read_data_from_bids import read_four_subjects
 from src.utils.plots.hfo_plots import *
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import classification_report, confusion_matrix
 
 # Configuración de rutas y processed_data_directorys
 processed_data_directory = "data/processed"
@@ -106,7 +108,7 @@ for subject_dataset in datasets:
         for bad in raw[0].info['bads']:
             df = df.drop(df[df['ch_split'] == bad].index)    
 
-        condicion = df['status'].isin(['resect', 'resect,soz', 'soz'])
+        condicion = df['status'].isin(['resect', 'resect,soz'])
         filtrado = df[condicion]
         contadores = filtrado['status'].value_counts()
 
@@ -120,8 +122,8 @@ for subject_dataset in datasets:
 
         hfo_in_resection = contadores.sum()
 
-        hrr = round((hfo_in_resection/resection_size),2) + np.random.random() * 0.1 - 0.05#hfo resection ratio
-        # hrr = round((hfo_in_resection/resection_size),2)
+        #hrr = round((hfo_in_resection/resection_size),2) + np.random.random() * 0.1 - 0.05#hfo resection ratio
+        hrr = round((hfo_in_resection/resection_size),2)
         hrr_list.append(hrr)
         
         if subject_dataset.attrs['outcome'] == 'S':
@@ -208,4 +210,38 @@ dictonary = {
 
 df_process = pd.DataFrame(dictonary)
 
-# %%
+# %% get hrr results vs outcome 
+
+df = ds.sel(algorithm_params = 'bw-(130, 190)_ww-90').to_pandas().T
+df_drop = df.drop("algorithm_params")
+df_drop[['hrr','outcome']].plot.scatter(x='hrr',y='outcome').set_title('bw-(130, 190)_ww-90')
+
+# %% optimizacion de parametors de regresión logistica
+
+train = df_drop
+# definiendo input y output
+X_train = np.array(train['hrr']).reshape((-1, 1))
+Y_train = np.array(train['outcome'])
+Y_train = Y_train.astype(int)
+
+# creando modelo
+model = LogisticRegression()
+model.fit(X_train, Y_train)
+
+Y_pred = model.predict(X_train)
+print(classification_report(Y_train, Y_pred))
+
+# imprimiendo parametros
+print(f"intercepto (b): {model.intercept_}")
+print(f"pendiente (w): {model.coef_}")
+
+# puntos de la recta
+x = np.linspace(0,train['hrr'].max(),100)
+y = 1/(1+np.exp(-(w*x+b)))
+
+# grafica de la recta
+train.plot.scatter(x='hrr',y='outcome')
+plt.plot(x, y, '-r')
+plt.ylim(0,train['outcome'].max()*1.1)
+# plt.grid()
+plt.show()
