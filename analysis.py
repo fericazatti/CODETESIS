@@ -113,7 +113,7 @@ for subject_dataset in datasets:
         contadores = filtrado['status'].value_counts()
 
         resection_size = contadores.sum()
-        resection_size = round(resection_size/2)
+        resection_size = round(resection_size/2) 
         
         hfo_region = df.sort_values('counts', ascending=False).head(resection_size)
         condicion = hfo_region['status'].isin(['resect', 'resect,soz'])
@@ -125,7 +125,7 @@ for subject_dataset in datasets:
         #hrr = round((hfo_in_resection/resection_size),2) + np.random.random() * 0.1 - 0.05#hfo resection ratio
         hrr = round((hfo_in_resection/resection_size),2)
         hrr_list.append(hrr)
-        
+                
         if subject_dataset.attrs['outcome'] == 'S':
             outcomes.append(1)
         else:
@@ -135,13 +135,21 @@ for subject_dataset in datasets:
     fusion_lista = [list(fila) for fila in fusion]
 
     ds[subject_dataset.attrs['his_id']] = xr.DataArray(fusion_lista, dims=('algorithm_params', 'statisicians'))
+    
+    
 
 # %%
 
-for element in ds.coords["algorithm_params"].values:
+df_decode_detect = pd.DataFrame({'name':[], 'combination':[]})
+
+for i, element in enumerate(ds.coords["algorithm_params"].values):
     df = ds.sel(algorithm_params = element).to_pandas().T
     df_drop = df.drop("algorithm_params")
-    df_drop[['hrr','outcome']].plot.scatter(x='hrr',y='outcome').set_title(element)
+    
+    df_process = df_process.join(df_drop['hrr']).rename(columns={'hrr': f'hfo_detect_C{i+1}'})
+    df_decode_detect = df_decode_detect.append({'name': f'hfo_detect_C{i+1}', 'combination': element}, ignore_index=True)
+
+   # df_drop[['hrr','outcome']].plot.scatter(x='hrr',y='outcome').set_title(element)
 
 
 
@@ -209,7 +217,7 @@ dictonary = {
         age_onset])}
 
 df_process = pd.DataFrame(dictonary)
-
+df_process = df_process.set_index('id')
 # %% get hrr results vs outcome 
 
 df = ds.sel(algorithm_params = 'bw-(130, 190)_ww-90').to_pandas().T
@@ -235,13 +243,17 @@ print(classification_report(Y_train, Y_pred))
 print(f"intercepto (b): {model.intercept_}")
 print(f"pendiente (w): {model.coef_}")
 
+b = model.intercept_
+w = model.coef_
+
 # puntos de la recta
-x = np.linspace(0,train['hrr'].max(),100)
+x = np.linspace(0,train['hrr'].max(),1000)
 y = 1/(1+np.exp(-(w*x+b)))
 
 # grafica de la recta
 train.plot.scatter(x='hrr',y='outcome')
-plt.plot(x, y, '-r')
+plt.plot(x, y.reshape(1000), '-r')
 plt.ylim(0,train['outcome'].max()*1.1)
 # plt.grid()
 plt.show()
+# %%
