@@ -81,13 +81,25 @@ def ensure_dataset(subjects=None, bids_root=DEFAULT_BIDS_ROOT):
     if subjects is None:
         subjects = seeg_subjects(bids_root)
     else:
-        _ensure_participants(bids_root)  # asegura metadatos aunque se pasen sujetos
         subjects = [s.replace("sub-", "") for s in subjects]
+    _ensure_participants(bids_root)  # metadatos primero (idempotente)
 
-    # 2. patrones include: solo interictal SEEG (EDF + sidecars) por sujeto
-    include = ["participants.tsv", "participants.json"]
+    # 2. Descarga POR SUJETO con try/except: no todos los sujetos con implant=SEEG
+    #    tienen registros interictal SEEG (algunos solo ictal u otra adquisición).
+    #    openneuro-py aborta toda la descarga si un patrón include no matchea nada,
+    #    así que se aísla cada sujeto y se saltea el que no tenga esos archivos.
+    kept, skipped = [], []
     for sub in subjects:
-        include.append(f"sub-{sub}/*/ieeg/*task-interictal*acq-seeg*")
-
-    _download(include, bids_root)
+        if os.path.isdir(os.path.join(bids_root, f"sub-{sub}", "ses-presurgery", "ieeg")):
+            kept.append(sub)  # ya presente en el caché -> no re-descargar
+            continue
+        try:
+            _download([f"sub-{sub}/*/ieeg/*task-interictal*acq-seeg*"], bids_root)
+            kept.append(sub)
+        except RuntimeError:
+            skipped.append(sub)  # sin interictal SEEG -> se saltea
+    if skipped:
+        print(f"[cloud] {len(skipped)} sujeto(s) sin interictal SEEG, salteados: {skipped}",
+              flush=True)
+    print(f"[cloud] {len(kept)} sujeto(s) con interictal SEEG disponibles.", flush=True)
     return bids_root

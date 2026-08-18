@@ -40,7 +40,7 @@ def ms_to_samples(window_ms, fs):
     return int(round(window_ms * fs / 1000.0))
 
 
-def load_configs(path, fs):
+def load_configs(path, fs, drop_invalid=False):
     """
     Lee la tabla TSV de configuraciones y la valida contra la frecuencia de
     muestreo ``fs`` del registro que se va a procesar.
@@ -52,6 +52,11 @@ def load_configs(path, fs):
     fs : float
         Frecuencia de muestreo [Hz] del registro. Se usa para (a) validar
         Nyquist y (b) convertir ``window_ms`` a ``window_samples``.
+    drop_invalid : bool
+        Si False (default), las configs que superan Nyquist o dan ventana muy
+        corta a esta ``fs`` lanzan ValueError. Si True, se DESCARTAN esas filas
+        (útil para cohortes con fs heterogénea: p.ej. a fs=256 Hz solo corre
+        high gamma y se descartan las bandas ripple). Puede devolver 0 filas.
 
     Returns
     -------
@@ -97,29 +102,28 @@ def load_configs(path, fs):
     if bad_order:
         raise ValueError(f"Se requiere f_low < f_high en configs: {bad_order}")
 
-    # 4. Nyquist: toda banda debe quedar estrictamente por debajo de fs/2
-    nyquist = fs / 2.0
-    over_nyq = df.loc[df["f_high"] >= nyquist, "config_id"].tolist()
-    if over_nyq:
-        raise ValueError(
-            f"f_high >= Nyquist ({nyquist:.1f} Hz) para configs: {over_nyq}. "
-            f"A fs={fs} Hz no se pueden analizar esas bandas (p.ej. fast ripples). "
-            f"Subí fs o quitá esas filas."
-        )
-
-    # 5. solape en rango
+    # 5. solape en rango (error de autoría, siempre lanza)
     bad_ov = df.loc[(df["overlap_pct"] < 0) | (df["overlap_pct"] >= 100), "config_id"].tolist()
     if bad_ov:
         raise ValueError(f"overlap_pct debe estar en [0, 100) en configs: {bad_ov}")
 
-    # 6. ventana -> muestras suficiente
+    # 6. ventana -> muestras
     df["window_samples"] = (df["window_ms"] * fs / 1000.0).round().astype(int)
-    thin = df.loc[df["window_samples"] < MIN_WINDOW_SAMPLES, "config_id"].tolist()
-    if thin:
-        raise ValueError(
-            f"Ventana demasiado corta para fs={fs} Hz "
-            f"(< {MIN_WINDOW_SAMPLES} muestras) en configs: {thin}. "
-            f"Aumentá window_ms."
-        )
+
+    # Chequeos dependientes de fs (Nyquist + ventana mínima):
+    nyquist = fs / 2.0
+    over_nyq = df["f_high"] >= nyquist
+    thin = df["window_samples"] < MIN_WINDOW_SAMPLES
+    invalid = over_nyq | thin
+
+    if invalid.any():
+        ids = df.loc[invalid, "config_id"].tolist()
+        if not drop_invalid:
+            raise ValueError(
+                f"A fs={fs} Hz hay configs inválidas (Nyquist {nyquist:.1f} Hz / "
+                f"ventana < {MIN_WINDOW_SAMPLES} muestras): {ids}. "
+                f"Usá drop_invalid=True para descartarlas o ajustá la tabla."
+            )
+        df = df.loc[~invalid].copy()
 
     return df.reset_index(drop=True)

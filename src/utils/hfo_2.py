@@ -18,7 +18,9 @@ def plot_events_hfo_2(data, ch_info, last_time):
     
     status_desc = []
     for channel in ch_names_last:
-        status_desc.append(ch_info.loc[ch_info['name'] == channel, 'status_description'].iloc[0])
+        match = ch_info.loc[ch_info['name'] == channel, 'status_description']
+        # Algunos canales bipolares no aparecen en channels.tsv -> 'n/a' en vez de romper.
+        status_desc.append(match.iloc[0] if len(match) else 'n/a')
 
     hfo_rate = counts / last_time * 60 #frecuencia de eventos [counts]/min
     df = pd.DataFrame({'channels': channels,
