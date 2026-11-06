@@ -1,0 +1,298 @@
+{
+"sub-HUP060": [
+"ds004100/sub-HUP060/ses-presurgery/ieeg/sub-HUP060_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP060/ses-presurgery/ieeg/sub-HUP060_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP060/ses-presurgery/ieeg/sub-HUP060_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP060/ses-presurgery/ieeg/sub-HUP060_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP060/ses-presurgery/ieeg/sub-HUP060_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP060/ses-presurgery/ieeg/sub-HUP060_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP112": [
+"ds004100/sub-HUP112/ses-presurgery/ieeg/sub-HUP112_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP112/ses-presurgery/ieeg/sub-HUP112_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP112/ses-presurgery/ieeg/sub-HUP112_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP112/ses-presurgery/ieeg/sub-HUP112_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP112/ses-presurgery/ieeg/sub-HUP112_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP112/ses-presurgery/ieeg/sub-HUP112_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP116": [
+"ds004100/sub-HUP116/ses-presurgery/ieeg/sub-HUP116_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP116/ses-presurgery/ieeg/sub-HUP116_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP116/ses-presurgery/ieeg/sub-HUP116_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP116/ses-presurgery/ieeg/sub-HUP116_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP116/ses-presurgery/ieeg/sub-HUP116_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP116/ses-presurgery/ieeg/sub-HUP116_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP117": [
+"ds004100/sub-HUP117/ses-presurgery/ieeg/sub-HUP117_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP117/ses-presurgery/ieeg/sub-HUP117_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP117/ses-presurgery/ieeg/sub-HUP117_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP117/ses-presurgery/ieeg/sub-HUP117_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP117/ses-presurgery/ieeg/sub-HUP117_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP117/ses-presurgery/ieeg/sub-HUP117_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP130": [
+"ds004100/sub-HUP130/ses-presurgery/ieeg/sub-HUP130_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP130/ses-presurgery/ieeg/sub-HUP130_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP130/ses-presurgery/ieeg/sub-HUP130_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP130/ses-presurgery/ieeg/sub-HUP130_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP130/ses-presurgery/ieeg/sub-HUP130_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP130/ses-presurgery/ieeg/sub-HUP130_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP132": [
+"ds004100/sub-HUP132/ses-presurgery/ieeg/sub-HUP132_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP132/ses-presurgery/ieeg/sub-HUP132_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP132/ses-presurgery/ieeg/sub-HUP132_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP132/ses-presurgery/ieeg/sub-HUP132_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP132/ses-presurgery/ieeg/sub-HUP132_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP132/ses-presurgery/ieeg/sub-HUP132_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP133": [
+"ds004100/sub-HUP133/ses-presurgery/ieeg/sub-HUP133_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP133/ses-presurgery/ieeg/sub-HUP133_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP133/ses-presurgery/ieeg/sub-HUP133_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP133/ses-presurgery/ieeg/sub-HUP133_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP133/ses-presurgery/ieeg/sub-HUP133_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP133/ses-presurgery/ieeg/sub-HUP133_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP134": [
+"ds004100/sub-HUP134/ses-presurgery/ieeg/sub-HUP134_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP134/ses-presurgery/ieeg/sub-HUP134_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP134/ses-presurgery/ieeg/sub-HUP134_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP134/ses-presurgery/ieeg/sub-HUP134_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP134/ses-presurgery/ieeg/sub-HUP134_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP134/ses-presurgery/ieeg/sub-HUP134_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP135": [
+"ds004100/sub-HUP135/ses-presurgery/ieeg/sub-HUP135_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP135/ses-presurgery/ieeg/sub-HUP135_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP135/ses-presurgery/ieeg/sub-HUP135_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP135/ses-presurgery/ieeg/sub-HUP135_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP135/ses-presurgery/ieeg/sub-HUP135_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP135/ses-presurgery/ieeg/sub-HUP135_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP138": [
+"ds004100/sub-HUP138/ses-presurgery/ieeg/sub-HUP138_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP138/ses-presurgery/ieeg/sub-HUP138_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP138/ses-presurgery/ieeg/sub-HUP138_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP138/ses-presurgery/ieeg/sub-HUP138_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP138/ses-presurgery/ieeg/sub-HUP138_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP138/ses-presurgery/ieeg/sub-HUP138_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP139": [
+"ds004100/sub-HUP139/ses-presurgery/ieeg/sub-HUP139_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP139/ses-presurgery/ieeg/sub-HUP139_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP139/ses-presurgery/ieeg/sub-HUP139_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP139/ses-presurgery/ieeg/sub-HUP139_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP139/ses-presurgery/ieeg/sub-HUP139_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP139/ses-presurgery/ieeg/sub-HUP139_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP140": [
+"ds004100/sub-HUP140/ses-presurgery/ieeg/sub-HUP140_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP140/ses-presurgery/ieeg/sub-HUP140_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP140/ses-presurgery/ieeg/sub-HUP140_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP140/ses-presurgery/ieeg/sub-HUP140_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP140/ses-presurgery/ieeg/sub-HUP140_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP140/ses-presurgery/ieeg/sub-HUP140_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP141": [
+"ds004100/sub-HUP141/ses-presurgery/ieeg/sub-HUP141_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP141/ses-presurgery/ieeg/sub-HUP141_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP141/ses-presurgery/ieeg/sub-HUP141_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP141/ses-presurgery/ieeg/sub-HUP141_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP141/ses-presurgery/ieeg/sub-HUP141_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP141/ses-presurgery/ieeg/sub-HUP141_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP142": [
+"ds004100/sub-HUP142/ses-presurgery/ieeg/sub-HUP142_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP142/ses-presurgery/ieeg/sub-HUP142_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP142/ses-presurgery/ieeg/sub-HUP142_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP142/ses-presurgery/ieeg/sub-HUP142_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP142/ses-presurgery/ieeg/sub-HUP142_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP142/ses-presurgery/ieeg/sub-HUP142_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP144": [
+"ds004100/sub-HUP144/ses-presurgery/ieeg/sub-HUP144_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP144/ses-presurgery/ieeg/sub-HUP144_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP144/ses-presurgery/ieeg/sub-HUP144_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP144/ses-presurgery/ieeg/sub-HUP144_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP144/ses-presurgery/ieeg/sub-HUP144_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP144/ses-presurgery/ieeg/sub-HUP144_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP146": [
+"ds004100/sub-HUP146/ses-presurgery/ieeg/sub-HUP146_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP146/ses-presurgery/ieeg/sub-HUP146_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP146/ses-presurgery/ieeg/sub-HUP146_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP146/ses-presurgery/ieeg/sub-HUP146_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP146/ses-presurgery/ieeg/sub-HUP146_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP146/ses-presurgery/ieeg/sub-HUP146_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP148": [
+"ds004100/sub-HUP148/ses-presurgery/ieeg/sub-HUP148_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP148/ses-presurgery/ieeg/sub-HUP148_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP148/ses-presurgery/ieeg/sub-HUP148_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP148/ses-presurgery/ieeg/sub-HUP148_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP148/ses-presurgery/ieeg/sub-HUP148_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP148/ses-presurgery/ieeg/sub-HUP148_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP150": [
+"ds004100/sub-HUP150/ses-presurgery/ieeg/sub-HUP150_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP150/ses-presurgery/ieeg/sub-HUP150_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP150/ses-presurgery/ieeg/sub-HUP150_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP150/ses-presurgery/ieeg/sub-HUP150_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP150/ses-presurgery/ieeg/sub-HUP150_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP150/ses-presurgery/ieeg/sub-HUP150_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP151": [
+"ds004100/sub-HUP151/ses-presurgery/ieeg/sub-HUP151_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP151/ses-presurgery/ieeg/sub-HUP151_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP151/ses-presurgery/ieeg/sub-HUP151_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP151/ses-presurgery/ieeg/sub-HUP151_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP151/ses-presurgery/ieeg/sub-HUP151_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP151/ses-presurgery/ieeg/sub-HUP151_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP157": [
+"ds004100/sub-HUP157/ses-presurgery/ieeg/sub-HUP157_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP157/ses-presurgery/ieeg/sub-HUP157_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP157/ses-presurgery/ieeg/sub-HUP157_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP157/ses-presurgery/ieeg/sub-HUP157_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP157/ses-presurgery/ieeg/sub-HUP157_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP157/ses-presurgery/ieeg/sub-HUP157_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP160": [
+"ds004100/sub-HUP160/ses-presurgery/ieeg/sub-HUP160_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP160/ses-presurgery/ieeg/sub-HUP160_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP160/ses-presurgery/ieeg/sub-HUP160_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP160/ses-presurgery/ieeg/sub-HUP160_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP160/ses-presurgery/ieeg/sub-HUP160_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP160/ses-presurgery/ieeg/sub-HUP160_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP162": [
+"ds004100/sub-HUP162/ses-presurgery/ieeg/sub-HUP162_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP162/ses-presurgery/ieeg/sub-HUP162_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP162/ses-presurgery/ieeg/sub-HUP162_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP162/ses-presurgery/ieeg/sub-HUP162_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP162/ses-presurgery/ieeg/sub-HUP162_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP162/ses-presurgery/ieeg/sub-HUP162_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP163": [
+"ds004100/sub-HUP163/ses-presurgery/ieeg/sub-HUP163_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP163/ses-presurgery/ieeg/sub-HUP163_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP163/ses-presurgery/ieeg/sub-HUP163_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP163/ses-presurgery/ieeg/sub-HUP163_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP163/ses-presurgery/ieeg/sub-HUP163_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP163/ses-presurgery/ieeg/sub-HUP163_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP164": [
+"ds004100/sub-HUP164/ses-presurgery/ieeg/sub-HUP164_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP164/ses-presurgery/ieeg/sub-HUP164_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP164/ses-presurgery/ieeg/sub-HUP164_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP164/ses-presurgery/ieeg/sub-HUP164_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP164/ses-presurgery/ieeg/sub-HUP164_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP164/ses-presurgery/ieeg/sub-HUP164_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP165": [
+"ds004100/sub-HUP165/ses-presurgery/ieeg/sub-HUP165_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP165/ses-presurgery/ieeg/sub-HUP165_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP165/ses-presurgery/ieeg/sub-HUP165_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP165/ses-presurgery/ieeg/sub-HUP165_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP165/ses-presurgery/ieeg/sub-HUP165_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP165/ses-presurgery/ieeg/sub-HUP165_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP166": [
+"ds004100/sub-HUP166/ses-presurgery/ieeg/sub-HUP166_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP166/ses-presurgery/ieeg/sub-HUP166_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP166/ses-presurgery/ieeg/sub-HUP166_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP166/ses-presurgery/ieeg/sub-HUP166_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP166/ses-presurgery/ieeg/sub-HUP166_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP166/ses-presurgery/ieeg/sub-HUP166_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP171": [
+"ds004100/sub-HUP171/ses-presurgery/ieeg/sub-HUP171_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP171/ses-presurgery/ieeg/sub-HUP171_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP171/ses-presurgery/ieeg/sub-HUP171_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP171/ses-presurgery/ieeg/sub-HUP171_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP171/ses-presurgery/ieeg/sub-HUP171_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP171/ses-presurgery/ieeg/sub-HUP171_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP172": [
+"ds004100/sub-HUP172/ses-presurgery/ieeg/sub-HUP172_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP172/ses-presurgery/ieeg/sub-HUP172_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP172/ses-presurgery/ieeg/sub-HUP172_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP172/ses-presurgery/ieeg/sub-HUP172_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP172/ses-presurgery/ieeg/sub-HUP172_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP172/ses-presurgery/ieeg/sub-HUP172_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP173": [
+"ds004100/sub-HUP173/ses-presurgery/ieeg/sub-HUP173_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP173/ses-presurgery/ieeg/sub-HUP173_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP173/ses-presurgery/ieeg/sub-HUP173_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP173/ses-presurgery/ieeg/sub-HUP173_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP173/ses-presurgery/ieeg/sub-HUP173_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP173/ses-presurgery/ieeg/sub-HUP173_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP177": [
+"ds004100/sub-HUP177/ses-presurgery/ieeg/sub-HUP177_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP177/ses-presurgery/ieeg/sub-HUP177_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP177/ses-presurgery/ieeg/sub-HUP177_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP177/ses-presurgery/ieeg/sub-HUP177_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP177/ses-presurgery/ieeg/sub-HUP177_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP177/ses-presurgery/ieeg/sub-HUP177_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP179": [
+"ds004100/sub-HUP179/ses-presurgery/ieeg/sub-HUP179_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP179/ses-presurgery/ieeg/sub-HUP179_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP179/ses-presurgery/ieeg/sub-HUP179_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP179/ses-presurgery/ieeg/sub-HUP179_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP179/ses-presurgery/ieeg/sub-HUP179_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP179/ses-presurgery/ieeg/sub-HUP179_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP180": [
+"ds004100/sub-HUP180/ses-presurgery/ieeg/sub-HUP180_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP180/ses-presurgery/ieeg/sub-HUP180_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP180/ses-presurgery/ieeg/sub-HUP180_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP180/ses-presurgery/ieeg/sub-HUP180_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP180/ses-presurgery/ieeg/sub-HUP180_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP180/ses-presurgery/ieeg/sub-HUP180_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP181": [
+"ds004100/sub-HUP181/ses-presurgery/ieeg/sub-HUP181_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP181/ses-presurgery/ieeg/sub-HUP181_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP181/ses-presurgery/ieeg/sub-HUP181_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP181/ses-presurgery/ieeg/sub-HUP181_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP181/ses-presurgery/ieeg/sub-HUP181_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP181/ses-presurgery/ieeg/sub-HUP181_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP185": [
+"ds004100/sub-HUP185/ses-presurgery/ieeg/sub-HUP185_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP185/ses-presurgery/ieeg/sub-HUP185_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP185/ses-presurgery/ieeg/sub-HUP185_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP185/ses-presurgery/ieeg/sub-HUP185_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP185/ses-presurgery/ieeg/sub-HUP185_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP185/ses-presurgery/ieeg/sub-HUP185_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP187": [
+"ds004100/sub-HUP187/ses-presurgery/ieeg/sub-HUP187_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP187/ses-presurgery/ieeg/sub-HUP187_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP187/ses-presurgery/ieeg/sub-HUP187_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP187/ses-presurgery/ieeg/sub-HUP187_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP187/ses-presurgery/ieeg/sub-HUP187_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP187/ses-presurgery/ieeg/sub-HUP187_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP188": [
+"ds004100/sub-HUP188/ses-presurgery/ieeg/sub-HUP188_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP188/ses-presurgery/ieeg/sub-HUP188_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP188/ses-presurgery/ieeg/sub-HUP188_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP188/ses-presurgery/ieeg/sub-HUP188_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP188/ses-presurgery/ieeg/sub-HUP188_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP188/ses-presurgery/ieeg/sub-HUP188_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+],
+"sub-HUP190": [
+"ds004100/sub-HUP190/ses-presurgery/ieeg/sub-HUP190_ses-presurgery_task-interictal_acq-seeg_run-01_channels.tsv",
+"ds004100/sub-HUP190/ses-presurgery/ieeg/sub-HUP190_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.edf",
+"ds004100/sub-HUP190/ses-presurgery/ieeg/sub-HUP190_ses-presurgery_task-interictal_acq-seeg_run-01_ieeg.json",
+"ds004100/sub-HUP190/ses-presurgery/ieeg/sub-HUP190_ses-presurgery_task-interictal_acq-seeg_run-02_channels.tsv",
+"ds004100/sub-HUP190/ses-presurgery/ieeg/sub-HUP190_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.edf",
+"ds004100/sub-HUP190/ses-presurgery/ieeg/sub-HUP190_ses-presurgery_task-interictal_acq-seeg_run-02_ieeg.json"
+]
+}

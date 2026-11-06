@@ -1,0 +1,6 @@
+.venv/
+bids/
+out/
+pickles_2023/
+__pycache__/
+logs/sub-*
