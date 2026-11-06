@@ -22,5 +22,8 @@ scikit-learn<1.6
 scikit-image
 matplotlib
 
+# Mapas cerebrales (glass brain) para el informe de síntesis -- trae nibabel
+nilearn
+
 # Opcional: alternativa de descarga vía S3 anónimo (ver src/utils/cloud_data.py)
 # boto3

@@ -21,8 +21,8 @@ La conversión ms -> muestras se hace acá (arreglo del bug histórico en el que
 
 import pandas as pd
 
-VALID_BANDS = {"highgamma", "ripple"}
-MIN_WINDOW_SAMPLES = 4  # ventana RMS mínima representable de forma significativa
+VALID_BANDS = {"highgamma", "ripple", "fastripple"}
+MIN_WINDOW_SAMPLES = 2  # ventana RMS mínima representable (a fs=500 Hz, 3 ms da 2 muestras)
 
 REQUIRED_COLUMNS = [
     "config_id",

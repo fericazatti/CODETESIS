@@ -30,6 +30,7 @@ from datetime import datetime
 import pandas as pd
 
 from src.utils.cloud_data import ensure_dataset, DEFAULT_BIDS_ROOT, seeg_subjects
+from src.utils.config_table import load_configs
 from src.utils.read_data_from_bids import detect_subjects
 from data_processing import process_subject
 
@@ -37,6 +38,7 @@ PROCESSED_DIR = "data/processed"
 RESULTS_DIR = "data/results"
 LOG_PATH = os.path.join(RESULTS_DIR, "run_full.log")
 RUNS_CSV = os.path.join(RESULTS_DIR, "interictal_runs_report.csv")
+STATE_CSV = os.path.join(RESULTS_DIR, "state_index.csv")
 
 
 def mem_available_mb():
@@ -122,19 +124,22 @@ def main():
     log(f"=== run_full START | njobs={args.njobs} mem_floor={args.mem_floor_mb}MB "
         f"config={args.config} ===")
 
-    # 1. Descarga selectiva (idempotente) de todos los SEEG interictal + metadatos.
-    log("Conectando a OpenNeuro y asegurando dataset (descarga selectiva)...")
-    bids_root = ensure_dataset(subjects=args.subjects, bids_root=args.bids_root)
+    # 1. Metadatos de participantes y lista de sujetos SEEG
+    log("Asegurando metadatos de OpenNeuro...")
+    bids_root = args.bids_root
+    if args.subjects:
+        detected = [s.replace("sub-", "") for s in args.subjects]
+    else:
+        detected = seeg_subjects(bids_root)
+    detected.sort()
+    log(f"Sujetos SEEG interictal a evaluar: {len(detected)} -> {detected}")
+
+    state_map = {}
+    if os.path.exists(STATE_CSV):
+        state_map = pd.read_csv(STATE_CSV).set_index("subject")["sfreq"].to_dict()
 
     kwargs_bids = {'dataset': bids_root, 'datatype': 'ieeg',
                    'task': 'interictal', 'acquisition': 'seeg'}
-
-    # 2. Sujetos a procesar = los detectados con run interictal SEEG.
-    detected = detect_subjects(**kwargs_bids)
-    if args.subjects:
-        detected = [s for s in detected if s in set(args.subjects)]
-    detected.sort()
-    log(f"Sujetos SEEG interictal detectados: {len(detected)} -> {detected}")
 
     n_ok, n_skip, n_err = 0, 0, 0
     for i, subject in enumerate(detected, 1):
@@ -146,7 +151,12 @@ def main():
             if args.add_missing:
                 with open(pickle_path, "rb") as f:
                     existing = pickle.load(f)
-                only_configs = all_config_ids - set(map(str, existing.data_vars))
+                sf = state_map.get(f"sub-{subject}", None)
+                if sf is not None:
+                    valid_cfg = set(load_configs(args.config, fs=sf, drop_invalid=True)["config_id"])
+                    only_configs = valid_cfg - set(map(str, existing.data_vars))
+                else:
+                    only_configs = all_config_ids - set(map(str, existing.data_vars))
                 if not only_configs:
                     log(f"[{i}/{len(detected)}] sub-{subject}: sin configs nuevas -> skip")
                     n_skip += 1
@@ -155,6 +165,9 @@ def main():
                 log(f"[{i}/{len(detected)}] sub-{subject}: pickle ya existe -> skip")
                 n_skip += 1
                 continue
+
+        # Descarga selectiva bajo demanda de este sujeto (si no está ya en disco)
+        ensure_dataset(subjects=[subject], bids_root=bids_root)
 
         # Guarda de memoria antes de arrancar el sujeto.
         njobs = args.njobs
@@ -187,14 +200,13 @@ def main():
                 f"MemAvail={mem_available_mb()}MB dt={dt:.0f}s")
             n_ok += 1
 
-            if args.cleanup_edf:
-                shutil.rmtree(edf_dir(bids_root, subject), ignore_errors=True)
-
             del ds
         except Exception as exc:  # noqa: BLE001 - un sujeto malo no tumba el batch
             n_err += 1
             log(f"[{i}/{len(detected)}] sub-{subject}: ERROR -> {type(exc).__name__}: {exc}")
         finally:
+            if args.cleanup_edf:
+                shutil.rmtree(edf_dir(bids_root, subject), ignore_errors=True)
             gc.collect()
 
     log(f"=== run_full DONE | ok={n_ok} skip={n_skip} err={n_err} "
