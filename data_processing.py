@@ -1,140 +1,139 @@
 # %% Imports
-import mne
-import matplotlib
-import matplotlib.pyplot as plt
-import numpy as np
-from numpy import newaxis
-from mne_connectivity import TemporalConnectivity
+import os
+import pickle
 
-from mne.minimum_norm import apply_inverse_epochs, read_inverse_operator
-from mne.viz import circular_layout
-from mne_connectivity import spectral_connectivity_epochs
-from mne_connectivity.viz import plot_connectivity_circle
-
-from mne_hfo import LineLengthDetector, RMSDetector
-from mne_hfo.score import _compute_score_data, accuracy
-from mne_hfo.sklearn import make_Xy_sklearn, DisabledCV
-
-# from epycom.event_detection import HilbertDetector
-
-from src.utils.preprocessing import convert_to_bipolar
-from src.utils.hfo import plot_events_hfo
-from src.utils.hfo_2 import plot_events_hfo_2, algorithm_params
-from src.utils.plots.hfo_plots import *
-
-from skimage.filters import threshold_otsu
 import pandas as pd
 import xarray as xr
 
-# from read_two_bids import raws, cahnnels_info_paths
-from src.utils.read_data_from_bids import detect_subjects, read_four_subjects
+from mne_hfo import RMSDetector
 
-import pickle
+from src.utils.preprocessing import convert_to_bipolar
+from src.utils.hfo_2 import plot_events_hfo_2
+from src.utils.config_table import load_configs
+from src.utils.cloud_data import ensure_dataset, DEFAULT_BIDS_ROOT
+from src.utils.read_data_from_bids import detect_subjects, read_subjects, participant_attrs
 
-    # %% 
-def data_processing(kwargs_bids, kwargs_for_combine):
-    
-    # id query of the patients in BIDS that meet the kwargs_bids
+
+# %%
+def process_subject(subject, kwargs_bids, config_path, n_jobs=-1, only_configs=None):
+    """
+    Procesa UN sujeto con las configuraciones de la tabla ``config_path``.
+
+    Concatena todos sus runs interictales, arma el montaje bipolar, valida la
+    tabla contra la fs real y corre el RMSDetector por cada config.
+
+    Parameters
+    ----------
+    n_jobs : int
+        Paralelismo del RMSDetector. -1 = todos los cores. Se acota (p.ej. 1-3)
+        cuando hay presión de memoria (ver run_full.py).
+    only_configs : set[str] | None
+        Si se da, se calculan SOLO esas config_id (modo incremental para agregar
+        configs nuevas a un pickle existente). None = todas las de la tabla.
+
+    Returns
+    -------
+    subject_dataset : xarray.Dataset | None   (None si el sujeto no tiene runs)
+    run_report_row : dict | None
+    """
+    raws, channels, run_report = read_subjects(subjects=[subject], **kwargs_bids)
+    if not raws:
+        return None, None
+
+    raw = convert_to_bipolar(raws[0])
+    fs = raw.info['sfreq']
+
+    # La tabla se valida contra la fs real. drop_invalid=True descarta las configs
+    # no representables a esta fs (p.ej. ripple a fs=256) y corre las válidas.
+    configs = load_configs(config_path, fs=fs, drop_invalid=True)
+    if only_configs is not None:
+        configs = configs[configs['config_id'].isin(only_configs)]
+    if len(configs) == 0:
+        return None, None
+    ch_info = pd.read_csv(channels[0], sep='\t')
+
+    config_names = []
+    config_arrays = []
+    for cfg in configs.itertuples(index=False):
+        kwargs_rmsdetector = {
+            'filter_band': (float(cfg.f_low), float(cfg.f_high)),
+            'threshold': float(cfg.threshold_sd),   # nº de desvíos estándar
+            'win_size': int(cfg.window_samples),    # ms -> muestras (ya convertido)
+            'overlap': float(cfg.overlap_pct) / 100.0,
+            'hfo_name': cfg.band_label,
+            'n_jobs': n_jobs,
+        }
+        rms_detector = RMSDetector(**kwargs_rmsdetector).fit(raw)
+        rms_hfo_df = rms_detector.df_
+
+        hfo_dist_df = plot_events_hfo_2(rms_hfo_df['channels'], ch_info, raw._last_time)
+        hfo_dist_xarray = hfo_dist_df.set_index(['channels']).to_xarray().to_array()
+        hfo_dist_xarray = hfo_dist_xarray.rename({'variable': 'values'})
+
+        config_arrays.append(hfo_dist_xarray)
+        config_names.append(cfg.config_id)
+
+    subject_dataset = xr.Dataset(dict(zip(config_names, config_arrays)))
+    # Atributos clínicos desde participants.tsv (robusto a la versión de mne_bids).
+    subject_dataset = subject_dataset.assign_attrs(
+        **participant_attrs(kwargs_bids['dataset'], subject)
+    )
+    return subject_dataset, run_report[0]
+
+
+def data_processing(kwargs_bids, config_path, n_jobs=-1):
+    """
+    Procesa TODOS los sujetos detectados. Envoltura sobre ``process_subject``.
+    (Para corridas grandes con control de memoria, ver run_full.py.)
+    """
     subjects_id = detect_subjects(**kwargs_bids)
-
-    # Calculamos el número de filas necesarias
-    rows = len(subjects_id) // 4 + (1 if len(subjects_id) % 4 != 0 else 0)
-
-    # Creamos la matriz bidimensional con valores None
-    subjects_matrix = [[None] * 4 for _ in range(rows)]
-    
-    # Llenamos la matriz con los elementos del arreglo
-    for i, element in enumerate(subjects_id):
-        row = i // 4
-        column = i % 4
-        subjects_matrix[row][column] = element
-
-    # %% 
     subject_datasets = []
-    print(subjects_matrix)
-    for subjects_row in subjects_matrix:
-        #read raw data on bids
-        raws, channels = read_four_subjects(subjects = subjects_row, **kwargs_bids)
-        
-        #preprocessing raw data -> convert to bipolar montage
-        for i in enumerate(raws):
-            raws[i[0]] = convert_to_bipolar(raws[i[0]])
-        
-        for raw, channel_info_path in zip(raws, channels):
-            ch_info = pd.read_csv(channel_info_path, sep='\t')
-            
-            algorithms_params_names = []
-            algorithms_params_array = []
+    full_run_report = []
+    for subject in subjects_id:
+        ds, row = process_subject(subject, kwargs_bids, config_path, n_jobs=n_jobs)
+        if ds is None:
+            continue
+        subject_datasets.append(ds)
+        full_run_report.append(row)
+    return subject_datasets, full_run_report
 
-            for combined_parameters in algorithm_params(**kwargs_for_combine):
-                
-                kwargs_rmsdetector = {
-                    'filter_band': combined_parameters[0], # (l_freq, h_freq)
-                    'threshold': 3, # Number of st. deviationsG
-                    'win_size': combined_parameters[1], # Sliding window size in samples
-                    'overlap': 0.25, # Fraction of window overlap [0, 1]
-                    'hfo_name': "ripple"
-                }
-                
-                rms_detector = RMSDetector(**kwargs_rmsdetector) 
-                rms_detector = rms_detector.fit(raw)
-                
-                rms_hfo_df = rms_detector.df_
-                hfo_dist_df = plot_events_hfo_2(rms_hfo_df['channels'], ch_info, raw._last_time)
-                status = ['bad' if element in raw.info['bads'] else 'good' for element in hfo_dist_df['channels']]     
-                hfo_dist_xarray = (hfo_dist_df.set_index(['channels']).to_xarray()).to_array()
-                hfo_dist_xarray = hfo_dist_xarray.rename({'variable':'values'})    
-                
-                algorithms_params_array.append(hfo_dist_xarray)
-                algorithms_params_names.append(f'bw-{combined_parameters[0]}_ww-{combined_parameters[1]}')
-                
-
-            subject_dataset = xr.Dataset(
-                dict(
-                    zip(algorithms_params_names, algorithms_params_array)
-                    )
-                )
-
-            attributes = raw.info['subject_info']
-            subject_dataset = subject_dataset.assign_attrs(**attributes)
-
-            subject_datasets.append(subject_dataset)
-        
-    del raws #memory free
-    
-    return subject_datasets
 
 if __name__ == "__main__":
-    
+
     processed_data_directory = "data/processed/"
-        
-    kwargs_for_combine = {
-                'lower_freq':   40,
-                'upper_freq':   249,
-                'band_width':   60,
-                'window_min':   50,
-                'window_max':   150,
-                'window_step':  20
-            }
+    results_directory = "data/results/"
+    os.makedirs(processed_data_directory, exist_ok=True)
+    os.makedirs(results_directory, exist_ok=True)
+
+    config_path = "configs/detector_configs.tsv"
+
+    # 1. Conexión automática al dataset en la nube: descarga selectiva (solo
+    #    interictal SEEG + metadatos) al caché local si no está ya presente.
+    bids_root = ensure_dataset(subjects=None, bids_root=DEFAULT_BIDS_ROOT)
 
     kwargs_bids = {
-        'dataset':'data/bids/ds004100',
-        'datatype':'ieeg',
-        'task':'interictal',
-        'acquisition':'seeg',
-        'run':'01'
-        }  
-    
-    # run process
-    subject_datasets = data_processing(kwargs_bids, kwargs_for_combine) 
-    
-    # save results on individual subjects dataset -> 'subject_id'_procesed.pickle
+        'dataset': bids_root,
+        'datatype': 'ieeg',
+        'task': 'interictal',
+        'acquisition': 'seeg',
+    }
+
+    # 2. Procesamiento
+    subject_datasets, run_report = data_processing(kwargs_bids, config_path)
+
+    # 3. Guardado por sujeto -> 'subject_id'_processed.pickle
     for dataset in subject_datasets:
-        subject_id = dataset.attrs['his_id'] 
-        filename = f"{subject_id}_processed.pickle"  
-        
+        subject_id = dataset.attrs['his_id']
+        filename = f"{subject_id}_processed.pickle"
         with open(processed_data_directory + filename, 'wb') as file:
             pickle.dump(dataset, file)
 
-    
-    print(f'Hfo distribution analysis for {kwargs_bids["dataset"]} finished')
+    # 4. Reporte de runs interictales por sujeto (para responder al revisor:
+    #    "how many interictal runs were considered")
+    run_df = pd.DataFrame(run_report)
+    run_df.to_csv(results_directory + "interictal_runs_report.csv", index=False)
+
+    print(f'HFO distribution analysis for {bids_root} finished')
+    if not run_df.empty:
+        print(f'Runs interictales por sujeto -> {results_directory}interictal_runs_report.csv')
+        print(run_df.to_string(index=False))

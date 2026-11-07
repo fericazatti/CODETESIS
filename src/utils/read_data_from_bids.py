@@ -1,152 +1,168 @@
 # %%
 # Imports needs for read data
-from openneuro import download
+import os
+import mne
+import pandas as pd
 from mne_bids import BIDSPath, read_raw_bids, get_entity_vals
+
+
+# Campos clínicos/demográficos de participants.tsv que el análisis downstream
+# espera en los attrs del dataset (his_id, outcome, engel, ...).
+def participant_attrs(dataset, subject):
+    """
+    Lee participants.tsv y devuelve la fila del sujeto como dict de atributos,
+    mapeando 'participant_id' -> 'his_id'.
+
+    Necesario porque mne_bids >=0.14 ya NO vuelca las columnas custom de
+    participants.tsv (outcome, engel, therapy, target, lesion_status, age_onset)
+    dentro de raw.info['subject_info']: las descarta con un warning. Se leen acá
+    de forma robusta a la versión de mne_bids.
+    """
+    pid = subject if subject.startswith('sub-') else f'sub-{subject}'
+    participants = pd.read_csv(os.path.join(dataset, 'participants.tsv'), sep='\t')
+    row = participants.loc[participants['participant_id'] == pid]
+    if row.empty:
+        return {'his_id': pid}
+    attrs = row.iloc[0].to_dict()
+    attrs['his_id'] = attrs.pop('participant_id')
+    return attrs
+
 
 # %% define functions
 def detect_subjects(dataset,
                     datatype,
                     task,
                     acquisition,
-                    run):
+                    run=None):
     """
-    Purpose: 
+    Devuelve la lista de sujetos del BIDS que cumplen los filtros dados.
+
+    ``run`` queda como parámetro opcional por compatibilidad, pero por defecto
+    (None) se enumeran los sujetos sin fijar el run, de modo que aparezcan
+    también los que no tienen 'run-01'.
     """
-    bids_root = f'{dataset}' 
+    bids_root = f'{dataset}'
     session = get_entity_vals(bids_root, 'session')
-    bids_path = BIDSPath(subject= None,
-                session= session[0],
-                task= task,                      
-                root=bids_root,                     
-                datatype= datatype,
-                acquisition= acquisition, 
-                run= run) 
-    
+    bids_path = BIDSPath(subject=None,
+                         session=session[0],
+                         task=task,
+                         root=bids_root,
+                         datatype=datatype,
+                         acquisition=acquisition,
+                         run=run)
+
     subjects_id = []
-    for path in bids_path.match(): subjects_id.append(path.subject)
-    subjects_id = list(set(subjects_id)) #delete repeats values
+    for path in bids_path.match():
+        subjects_id.append(path.subject)
+    subjects_id = list(set(subjects_id))  # delete repeats values
     subjects_id.sort()
 
     return subjects_id
 
-def read_four_subjects( subjects,  
-                    dataset,    
-                    datatype,
-                    task,   
-                    acquisition,
-                    run):
+
+def list_interictal_runs(subject, dataset, datatype, task, acquisition, session):
     """
-    Purpose: 
+    Enumera todos los runs (EDF) de un sujeto para el task/acquisition dados,
+    ordenados por etiqueta de run. Devuelve una lista de BIDSPath (uno por EDF).
     """
-    bids_root = f'{dataset}' 
-    session = get_entity_vals(bids_root, 'session')
-    bids_path = []
-    subjects = [element for element in subjects if element is not None] # delete None elements for matrix subjects       
-    for subject in subjects:    
-        bids_path.append( BIDSPath(subject= subject,
-                        session= session[0],
-                        task= task,                      
-                        root=bids_root,                     
-                        datatype= datatype,
-                        acquisition= acquisition,
-                        run = run))
+    bids_path = BIDSPath(subject=subject,
+                         session=session,
+                         task=task,
+                         root=dataset,
+                         datatype=datatype,
+                         acquisition=acquisition)
+    edf_paths = [p for p in bids_path.match() if p.extension == '.edf']
+    edf_paths.sort(key=lambda p: (p.run is None, p.run))
+    return edf_paths
 
 
-    # lectura de los archivos raw e info de los canales (tsv) para cada uno de los registros
+def _concatenate_runs(edf_paths):
+    """
+    Lee y concatena todos los runs de un sujeto en un único Raw.
+
+    Los runs se alinean al conjunto de canales COMÚN a todos (por si algún run
+    tiene canales distintos) antes de concatenar. Devuelve (raw, run_labels).
+    """
+    extra_params = {'preload': True}
+    run_raws = []
+    run_labels = []
+    for path in edf_paths:
+        raw = read_raw_bids(bids_path=path, verbose=False, extra_params=extra_params)
+        run_raws.append(raw)
+        run_labels.append(path.run)
+
+    if len(run_raws) == 1:
+        return run_raws[0], run_labels
+
+    # canales comunes a todos los runs (preserva el orden del primero)
+    common = set(run_raws[0].ch_names)
+    for raw in run_raws[1:]:
+        common &= set(raw.ch_names)
+    common_ordered = [ch for ch in run_raws[0].ch_names if ch in common]
+    for raw in run_raws:
+        raw.pick(common_ordered)
+
+    concatenated = mne.concatenate_raws(run_raws, verbose=False)
+    return concatenated, run_labels
+
+
+def read_subjects(subjects,
+                  dataset,
+                  datatype,
+                  task,
+                  acquisition,
+                  run=None):
+    """
+    Lee un grupo de sujetos concatenando TODOS sus runs interictales.
+
+    A diferencia de la versión previa (que fijaba run='01' y usaba un solo run),
+    acá se enumeran todos los runs del task/acquisition y se concatenan por
+    sujeto. ``run`` se ignora (queda por compatibilidad de firma).
+
+    Returns
+    -------
+    raws : list[mne.io.Raw]
+        Un Raw concatenado por sujeto.
+    channels_info_paths : list[str]
+        Ruta al channels.tsv del primer run de cada sujeto (SOZ/resect son
+        consistentes entre runs del mismo sujeto).
+    run_report : list[dict]
+        Un dict por sujeto: {subject, n_runs, runs, duration_min}.
+    """
+    session = get_entity_vals(dataset, 'session')[0]
+    subjects = [s for s in subjects if s is not None]  # limpia matriz con None
+
     raws = []
     channels_info_paths = []
-    extra_params = {'preload' : True}
-    for path in bids_path:    
-        for value in path.match():
-            if value.extension == '.edf':
-                raws.append(read_raw_bids(bids_path=value, verbose=False, extra_params = extra_params))
-            
-            if value.extension == '.tsv':
-                path_file = f'{dataset}/sub-{value.subject}/ses-{value.session}/{value.datatype}/{value.basename}'
-                channels_info_paths.append(path_file)
-    return raws, channels_info_paths
+    run_report = []
 
- # end def
+    for subject in subjects:
+        edf_paths = list_interictal_runs(subject, dataset, datatype, task, acquisition, session)
+        if not edf_paths:
+            continue
 
+        raw, run_labels = _concatenate_runs(edf_paths)
+        raws.append(raw)
 
+        # channels.tsv del primer run
+        first = edf_paths[0]
+        ch_tsv = (f'{dataset}/sub-{first.subject}/ses-{first.session}/'
+                  f'{first.datatype}/'
+                  f'{first.copy().update(suffix="channels", extension=".tsv").basename}')
+        channels_info_paths.append(ch_tsv)
 
-    # %%
-if __name__ == '__main__':
-    dataset = 'ds004100'
+        run_report.append({
+            'subject': subject,
+            'n_runs': len(edf_paths),
+            'runs': run_labels,
+            'duration_min': round(raw.n_times / raw.info['sfreq'] / 60.0, 2),
+        })
 
-    # download(dataset = dataset)
-    bids_root = f'./{dataset}' 
-
-    # %%
-    #Acceder a un sujeto/os dentro de la bbdd
-    #Luego crea los objetos path que apuntan a cada uno de los archivos de interes
-    #Finalmente se crea un arreglo con todos los objetos RAW listos para ser procesados
-
-    session = get_entity_vals(bids_root, 'session')
-    datatype = 'ieeg'
-    extensions = ['.edf']
-    task = 'interictal'
-    acquisition = 'seeg'
+    return raws, channels_info_paths, run_report
 
 
-    bids_path = BIDSPath(subject= None,
-                    session= session[0],
-                    task= task,                      
-                    root=bids_root,                     
-                    datatype= datatype,
-                    acquisition= acquisition) 
-
-
-    # %% lectura de los archivos raw e info de los canales (tsv) para cada uno de los registros
-    raws = []
-    cahnnels_info_paths = []
-    # extra_params = {'preload' : True}
-
-    for path in bids_path.match():    
-        if path.extension == '.edf':
-            raws.append(read_raw_bids(bids_path=path, verbose=False))
-        
-        if path.extension == '.tsv':
-            path_file = f'{dataset}/sub-{path.subject}/ses-{path.session}/{path.datatype}/{path.basename}'
-            cahnnels_info_paths.append(path_file)
-
-    subjects_id = []
-    for path in bids_path.match(): subjects_id.append(path.subject)
-    subjects_id = list(set(subjects_id)) #delete repeats values
-    subjects_id.sort()
-
-    # %% leer los subject y crear la matriz de subjects
-
-    kwargs = {
-        'dataset':'data/bids',
-        'datatype':'ieeg',
-        'task':'interictal',
-        'acquisition':'seeg',
-        'run':'01'
-    }
-
-    subjects_id = detect_subjects(**kwargs)
-
-    # Calculamos el número de filas necesarias
-    rows = len(subjects_id) // 4 + (1 if len(subjects_id) % 4 != 0 else 0)
-    # Creamos la matriz bidimensional con valores None
-    subjects_matrix = [[None] * 4 for _ in range(rows)]
-
-    # Llenamos la matriz con los elementos del arreglo
-    for i, element in enumerate(subjects_id):
-        row = i // 4
-        column = i % 4
-        subjects_matrix[row][column] = element
-
-    # %% llamada a la funcion de lectura raws
-
-
-
-    for subjects in subjects_matrix:
-        subjects = [element for element in subjects if element is not None] # delete None elements for matrix subjects       
-        read_four_subjects(subjects=subjects, **kwargs)
-        
-        
-
-
-    # %%
+# Alias de compatibilidad con el nombre histórico usado por otros scripts.
+# Nota: ahora devuelve una TERCERA salida (run_report). Los llamadores deben
+# desempacar tres valores: raws, channels, run_report = read_four_subjects(...)
+def read_four_subjects(subjects, dataset, datatype, task, acquisition, run=None):
+    return read_subjects(subjects, dataset, datatype, task, acquisition, run)

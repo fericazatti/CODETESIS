@@ -4,6 +4,8 @@ import os
 import xarray as xr
 import numpy as np
 
+import pandas as pd
+
 from src.utils.read_data_from_bids import read_four_subjects
 from src.utils.plots.hfo_plots import *
 from src.utils.analysis_utils import organize_results
@@ -23,8 +25,10 @@ kwargs_bids = {
     'datatype':'ieeg',
     'task':'interictal',
     'acquisition':'seeg',
-    'run':'01'
-    } 
+    }
+
+# Tabla de configuraciones (para decodificar banda/ventana/umbral por config_id)
+config_table = pd.read_csv("configs/detector_configs.tsv", sep='\t').set_index('config_id')
 
 # %% leer datos del procesamiento de un sujeto especifico
 
@@ -55,10 +59,12 @@ kwargs_bids = {
     'datatype':'ieeg',
     'task':'interictal',
     'acquisition':'seeg',
-    'run':'01'
-    } 
+    }
 
-raws, channels = read_four_subjects([subject] ,**kwargs_bids)
+# Tabla de configuraciones (para decodificar banda/ventana/umbral por config_id)
+config_table = pd.read_csv("configs/detector_configs.tsv", sep='\t').set_index('config_id')
+
+raws, channels, _ = read_four_subjects([subject] ,**kwargs_bids)
 
 for element in subject_dataset:
     print(element)
@@ -108,7 +114,7 @@ for element in subject_dataset:
 for subject_dataset in datasets:
     
     subject_id = subject_dataset.attrs['his_id']
-    raw, channels = read_four_subjects([subject_id.replace('sub-', '')] ,**kwargs_bids)
+    raw, channels, _ = read_four_subjects([subject_id.replace('sub-', '')] ,**kwargs_bids)
     
     hrr_list = []
     outcomes = []
@@ -134,8 +140,7 @@ for subject_dataset in datasets:
 
         hfo_in_resection = contadores.sum()
 
-        #hrr = round((hfo_in_resection/resection_size),2) + np.random.random() * 0.1 - 0.05#hfo resection ratio
-        hrr = round((hfo_in_resection/resection_size),2)
+        hrr = round((hfo_in_resection/resection_size),2)  # hfo resection ratio
         hrr_list.append(hrr)
                 
         if subject_dataset.attrs['outcome'] == 'S':
@@ -172,15 +177,18 @@ for i, element in enumerate(ds.coords["algorithm_params"].values):
 # %% global analysis of logistic regression
 df_results = {
     'combination_name': [],
-    'band_width':[],
-    'window_width':[],
-    'accuracy': [],    
+    'config_id': [],
+    'band_label':[],
+    'band_hz':[],
+    'window_ms':[],
+    'threshold_sd':[],
+    'accuracy': [],
     'f1-score': [],
     'AUC': []
 }
 for value in df_decode_detect.iterrows():
     value = value[1]
-    
+
     df = ds.sel(algorithm_params = value['combination']).to_pandas().T
     df_drop = df.drop("algorithm_params")
     
@@ -202,10 +210,16 @@ for value in df_decode_detect.iterrows():
     fpr, tpr, thresholds = roc_curve(Y_train, y_pred_proba)
     auc = roc_auc_score(Y_train, y_pred_proba)   
         
-    #agregar valores
+    #decodificar la config desde la tabla externa (combination == config_id)
+    cfg_id = value['combination']
+    cfg = config_table.loc[cfg_id] if cfg_id in config_table.index else None
+
     df_results['combination_name'].append(value['name'])
-    df_results['band_width'].append(None)
-    df_results['window_width'].append(None)
+    df_results['config_id'].append(cfg_id)
+    df_results['band_label'].append(cfg['band_label'] if cfg is not None else None)
+    df_results['band_hz'].append(f"{cfg['f_low']}-{cfg['f_high']}" if cfg is not None else None)
+    df_results['window_ms'].append(cfg['window_ms'] if cfg is not None else None)
+    df_results['threshold_sd'].append(cfg['threshold_sd'] if cfg is not None else None)
     df_results['accuracy'].append(report_dict['accuracy'])
     df_results['f1-score'].append(report_dict['1']['f1-score'])
     df_results['AUC'].append(auc)

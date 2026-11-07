@@ -1,8 +1,29 @@
-#re
+# Dependencias del pipeline de detección de HFO (codetesis)
 
-mne 
+# Núcleo MNE / detección
+mne
 mne-hfo
+mne-bids
 mne_connectivity
+
+# Datos en la nube (OpenNeuro) -- importado como `openneuro`
+openneuro-py
+
+# Cómputo / datos
 numpy
+scipy
+pandas
+xarray
+
+# Análisis / ML / gráficos
+# scikit-learn se fija <1.6: mne-hfo 0.2 usa la API privada BaseEstimator._validate_data,
+# removida en scikit-learn 1.6.
+scikit-learn<1.6
+scikit-image
 matplotlib
 
+# Mapas cerebrales (glass brain) para el informe de síntesis -- trae nibabel
+nilearn
+
+# Opcional: alternativa de descarga vía S3 anónimo (ver src/utils/cloud_data.py)
+# boto3
